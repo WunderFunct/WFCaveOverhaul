@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "wftech.caveoverhaul.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "caveoverhaul.refmap.json",
+  "mixins": [
+    "NoiseChunkAccessor",
+    "NoiseChunkMixin",
+    "NoiseBasedAquiferMixin",
+    "NoiseRouterDataAccess",
+    "NoiseRouterDataMixin",
+    "DebugNoiseRouterWithOnlyNoisesMixin",
+    "DebugDensityFunctionsMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
