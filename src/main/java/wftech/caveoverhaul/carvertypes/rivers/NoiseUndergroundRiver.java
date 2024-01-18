@@ -576,7 +576,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		}
 
 		//was 0.75
-		if(this.getNoise2D(bPos.getX(), bPos.getZ()) < 0.5){
+		if(this.getNoise2D(bPos.getX(), bPos.getZ()) < 0.75){
 			return false;
 		}
 		
