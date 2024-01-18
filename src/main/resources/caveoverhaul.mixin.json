@@ -5,11 +5,13 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "caveoverhaul.refmap.json",
   "mixins": [
-  	"RandomStateMixin",
-    "NoiseBasedChunkGeneratorMixin",
     "NoiseChunkAccessor",
     "NoiseChunkMixin",
-    "NoiseBasedAquiferMixin"
+    "NoiseBasedAquiferMixin",
+    "NoiseRouterDataAccess",
+    "NoiseRouterDataMixin",
+    "DebugNoiseRouterWithOnlyNoisesMixin",
+    "DebugDensityFunctionsMixin"
   ],
   "client": [
   ],

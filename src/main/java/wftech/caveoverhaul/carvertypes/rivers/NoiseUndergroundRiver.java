@@ -16,8 +16,6 @@ import java.util.Random;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import com.mojang.serialization.Codec;
 
@@ -26,13 +24,13 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -52,6 +50,8 @@ import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.DomainWarpType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
+import wftech.caveoverhaul.fastnoise.javax.vecmath.Vector2f;
+import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
 public class NoiseUndergroundRiver extends CaveWorldCarver {
 
@@ -71,7 +71,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private RandomSource random;
+	private Random random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
@@ -91,7 +91,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 	//abstract float getCaveThicknessNoise(float x, float z);
 	
 	@Override
-	public boolean isStartChunk(CaveCarverConfiguration p_224894_, RandomSource random) {
+	public boolean isStartChunk(CaveCarverConfiguration p_224894_, Random random) {
 		return true;
 	}
 	
@@ -102,7 +102,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		}		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.003f); //CHANGED was 0.003
 		tnoise.SetFractalType(FractalType.Ridged);
@@ -141,7 +141,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		}		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + 51);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + 51);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.002f);
 				
@@ -159,7 +159,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 	protected void initDomainWarp() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.025f);
 		tnoise.SetFractalLacunarity(1.1f);
@@ -170,7 +170,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 	protected void initShouldCarveNoise() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + 50);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + 50);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.0015f);
 		noiseShouldCarveBase = tnoise;
@@ -207,7 +207,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		CaveCarverConfiguration cfg, 
 		ChunkAccess level, 
 		Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		RandomSource random, 
+		Random random, 
 		Aquifer _aquifer, 
 		ChunkPos chunkPos_, 
 		CarvingMask mask) {
@@ -353,7 +353,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		
 		//add supporting blocks below
 		BlockPos topPos = curPos.above(topDelta);
-		boolean topIsLiquid = level.getBlockState(topPos).liquid();
+		boolean topIsLiquid = level.getBlockState(topPos).getBlock() instanceof LiquidBlock;
 		if(topIsLiquid) {
 			level.setBlockState(topPos, SAFE_ADD_BLOCK.defaultBlockState(), false);
 		}
@@ -433,7 +433,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 		return (1f + f) / 2f;
 	}
 	
-    public int getCaveY(RandomSource p_230361_1_) {
+    public int getCaveY(Random p_230361_1_) {
 	    return p_230361_1_.nextInt(p_230361_1_.nextInt(p_230361_1_.nextInt(120 + 64) + 1) + 1) - 64;
     }
 
@@ -575,6 +575,7 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 			return false;
 		}
 
+		//was 0.75
 		if(this.getNoise2D(bPos.getX(), bPos.getZ()) < 0.75){
 			return false;
 		}
@@ -585,9 +586,10 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 			return false;
 		}
 
-		float yLevelNoise_o = this.getCaveYNoise(x, z);
-		int y_o = this.getCaveY(yLevelNoise_o);
+		//float yLevelNoise_o = this.getCaveYNoise(x, z);
+		//int y_o = this.getCaveY(yLevelNoise_o);
 		
+		/*
 		MutableBlockPos mbPos = new MutableBlockPos();
 		mbPos.set(bPos.getX() + 1, bPos.getY(), bPos.getZ());
 		if(this.getWarpedNoise(mbPos.getX(), mbPos.getZ()) > NOISE_CUTOFF_RIVER) {
@@ -612,6 +614,28 @@ public class NoiseUndergroundRiver extends CaveWorldCarver {
 			float yLevelNoise1 = this.getCaveYNoise(mbPos.getX(), mbPos.getZ());
 			int y1 = this.getCaveY(yLevelNoise1);
 			return y == y1;
+		}
+		*/
+		
+		boolean shouldCheckBoundary = true;
+		for(int i = 0; i < 5; i++) {
+			if(shouldCheckBoundary) {
+				shouldCheckBoundary = !NoiseChunkMixinUtils.shouldSetToLava(128, x, y - i, z) && 
+						!NoiseChunkMixinUtils.shouldSetToWater(128, x, y - i, z);
+			}
+		}
+		
+		// /tp 4383 -18 3784
+		if(shouldCheckBoundary) {
+			if(NoiseChunkMixinUtils.shouldSetToLava(128, x + 1, y, z) || NoiseChunkMixinUtils.shouldSetToWater(128, x + 1, y, z)) {
+				return true;
+			} else if(NoiseChunkMixinUtils.shouldSetToLava(128, x - 1, y, z) || NoiseChunkMixinUtils.shouldSetToWater(128, x - 1, y, z)) {
+				return true;
+			} else if(NoiseChunkMixinUtils.shouldSetToLava(128, x, y, z + 1) || NoiseChunkMixinUtils.shouldSetToWater(128, x, y, z + 1)) {
+				return true;
+			} else if(NoiseChunkMixinUtils.shouldSetToLava(128, x, y, z - 1) || NoiseChunkMixinUtils.shouldSetToWater(128, x, y, z - 1)) {
+				return true;
+			}
 		}
 		
 		return false;

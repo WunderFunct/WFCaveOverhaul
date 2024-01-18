@@ -1,6 +1,0 @@
-{
-  "type": "caveoverhaul:remove_carver",
-  "biomes": "#is_overworld",
-  "carvers": "caveoverhaul:blank_carver",
-  "step": "underground_ores"
-}

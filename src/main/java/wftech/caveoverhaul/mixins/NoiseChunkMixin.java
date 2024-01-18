@@ -1,5 +1,7 @@
 package wftech.caveoverhaul.mixins;
 
+import java.util.Random;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -10,6 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.WorldGenUtils;
 import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer1;
 import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer2;

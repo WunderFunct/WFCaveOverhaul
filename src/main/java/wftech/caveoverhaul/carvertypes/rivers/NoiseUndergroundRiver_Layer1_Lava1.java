@@ -15,40 +15,21 @@ import java.util.Random;
 
 import java.util.function.Function;
 
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Aquifer;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
-import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
-import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import wftech.caveoverhaul.AirOnlyAquifer;
-import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
-import wftech.caveoverhaul.fastnoise.FastNoiseLite.DomainWarpType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
 
@@ -69,7 +50,7 @@ public class NoiseUndergroundRiver_Layer1_Lava1 extends NoiseUndergroundRiver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private RandomSource random;
+	private Random random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
@@ -102,9 +83,6 @@ public class NoiseUndergroundRiver_Layer1_Lava1 extends NoiseUndergroundRiver {
 	protected int getCaveY(float noiseValue) {
 		float min = -56;
 		float max = (-56) + 8; //6
-		if(!CaveOverhaul.ENABLE_MULTILAYER_RIVERS){
-			return (int) min;
-		}
 		float diffSize = max - min;
 		return (int) (noiseValue * (diffSize)) + (int) min;
 	}
@@ -138,7 +116,7 @@ public class NoiseUndergroundRiver_Layer1_Lava1 extends NoiseUndergroundRiver {
 	protected void initNoise() {		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset + 2);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset + 2);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.003f); //CHANGED was 0.003
 		tnoise.SetFractalType(FractalType.Ridged);
@@ -151,7 +129,7 @@ public class NoiseUndergroundRiver_Layer1_Lava1 extends NoiseUndergroundRiver {
 	protected void initNoiseYLevel() {
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.002f);
 				
@@ -162,7 +140,7 @@ public class NoiseUndergroundRiver_Layer1_Lava1 extends NoiseUndergroundRiver {
 	protected void initShouldCarveNoise() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset + 1);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset + 1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.0015f);
 		mNoiseShouldCarveBase = tnoise;

@@ -11,17 +11,17 @@ import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
 
 //was NoiseCavernBaseFixFromNewCaves
-public class NoiseCavernBottomLayer2 extends NoiseCavernBaseFixFromNewCaves {
+public class NoiseCavernBottomLayerAbsolute extends NoiseCavernBaseFixFromNewCaves {
 
-	public NoiseCavernBottomLayer2(Codec<CaveCarverConfiguration> p_159194_) {
+	public NoiseCavernBottomLayerAbsolute(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 	}
 	
 	/*
-	 * -64 to 0, doubling up to expand the amount of fun caves near the bottom
+	 * -54 to -64, aimed at exposing the lava layer
 	 */
 	public static float minY = -64;
-	public static float maxY = 0;
+	public static float maxY = -54;
 
 	//Transforms a given y-level noise to the cave-to-be-carved's y floor
 	@Override
@@ -36,7 +36,7 @@ public class NoiseCavernBottomLayer2 extends NoiseCavernBaseFixFromNewCaves {
 	 */
 	public static FastNoiseLite yNoise = null;
 	public static FastNoiseLite caveSizeNoise = null;
-	public static int seedOffset = 3;
+	public static int seedOffset = 1;
 	
 	private void initYNoise() {
 
@@ -72,25 +72,6 @@ public class NoiseCavernBottomLayer2 extends NoiseCavernBaseFixFromNewCaves {
 		
 		caveSizeNoise = tnoise;
 	}
-	
-	/*
-	public static void initCaveHeightMapStatic() {
-		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
-		seed += seedOffset + 1;
-		
-		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed(seed);
-		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
-		tnoise.SetFrequency(0.015f); //was 0.01
-		tnoise.SetFractalType(FractalType.FBm);
-		tnoise.SetFractalGain(1.3f); //seems to top out at 3.5 though
-		tnoise.SetFractalOctaves(2);
-		tnoise.SetFractalLacunarity(0.2f); //<-- 0.1?
-		
-		caveSizeNoise = tnoise;
-	}
-	*/
 
 	@Override
 	float getCaveYNoise(float x, float z) {
@@ -205,5 +186,4 @@ public class NoiseCavernBottomLayer2 extends NoiseCavernBaseFixFromNewCaves {
 	public static int getCaveYStatic(float noiseValue) {
 		return (int) (((maxY - minY) * noiseValue) + minY);
 	}
-
 }

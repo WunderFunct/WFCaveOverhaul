@@ -1,6 +1,8 @@
 package wftech.caveoverhaul.carvertypes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /*
  * Wall fix:
@@ -44,7 +46,6 @@ import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
-import wftech.caveoverhaul.fastnoise.FastNoiseLite.RotationType3D;
 
 /*
  * Changes:
@@ -62,9 +63,31 @@ import wftech.caveoverhaul.fastnoise.FastNoiseLite.RotationType3D;
  * Changed it back to *2
  */
 
-public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
+/*
+ * Core concept: skip carving
+ * 
+ * This carver uses a "skip carver," where every nth block is checked.
+ * The idea is that no meaningful change can occur within, say, 3 blocks
+ * so if every 3rd block is checked and no change in state is found from 
+ * the previous check, you can fill the skipped blocks in with the state of
+ * both checked blocks. Likewise, if a change is found, then a state change
+ * between air and stone has occurred locally within the y column, so you 
+ * only check nearby (y) blocks that would have normally have been skipped.
+ * That is:
+ * 1. Store the state of the current y block
+ * 2. Advance the y cursor by 3 positions.
+ * 3. Check the state of the new y block. If the same, fill in the same block
+ * 		for the previous 2 positions. Else, check the previous 2 and next 2
+ * 		blocks for their true value and log each block's state.
+ * 4. Repeat from (1).
+ * 
+ * By doing this, the number of actual noise checks should drop by a large amount,
+ * thus dramatically speeding up the carving process.
+ */
+public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 
 	public static int MAX_CAVE_SIZE_Y = 20;
+	public static int SKIP_AMOUNT = 2;
 	
 	//public static FastNoiseLite noise = null;
 	//public static FastNoiseLite yNoise = null;
@@ -79,7 +102,7 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
 	
-	public NoiseCavernBaseFixFromNewCaves(Codec<CaveCarverConfiguration> p_159194_) {
+	public NoiseCavernBaseSkipCarverVariant(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 		// TODO Auto-generated constructor stub
 	}
@@ -101,30 +124,34 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
 		tnoise.SetFractalOctaves(1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
-		//tnoise.SetRotationType3D(RotationType3D.ImproveXZPlanes);
 		tnoise.SetFractalGain(0.3f);
 		tnoise.SetFrequency(0.025f);
 		tnoise.SetFractalType(FractalType.FBm);
 		
-		noise = tnoise;
-	}
-	
-	public static void initNoiseStatic() {
 		
-		if(noise != null) {
-			return;
-		}
-		
-		//Simplex
+		/*
+		 * Too carvernous, not going to use
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
 		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
-		tnoise.SetFractalOctaves(1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
-		//tnoise.SetRotationType3D(RotationType3D.ImproveXZPlanes);
-		tnoise.SetFractalGain(0.3f);
-		tnoise.SetFrequency(0.025f);
+		tnoise.SetFrequency(0.01f);
+		//tnoise.SetFractalType(FractalType.FBM);
 		tnoise.SetFractalType(FractalType.FBm);
+		tnoise.SetFractalGain(2.5f);
+		tnoise.SetFractalOctaves(2);
+		tnoise.SetFractalLacunarity(0.1f);
+		*/
+
+		/*
+		FastNoiseLite tnoise = new FastNoiseLite();
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetFractalOctaves(1);
+		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
+		tnoise.SetFractalGain(0.3f); //seems to top out at 3.5 though
+		tnoise.SetFrequency(0.025f); //was 0.01
+		tnoise.SetFractalType(FractalType.FBm);
+		*/	
 		
 		noise = tnoise;
 	}
@@ -134,11 +161,7 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		return (int) (noiseValue * (64f));
 	}
 	
-	public static void initDomainWarp() {
-		
-		if(domainWarp != null) {
-			return;
-		}
+	protected void initDomainWarp() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
 		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
@@ -184,48 +207,25 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		
 		LevelChunkSection[] sections = level.getSections();
 		
+		List<Integer> airPositions = new ArrayList<>();
+		
 		for(int x_offset = 0; x_offset < 16; x_offset++) {
 			for(int z_offset = 0; z_offset < 16; z_offset++) {
 				int height = level.getHeight(Types.WORLD_SURFACE_WG, chunkPos.getBlockX(x_offset), chunkPos.getBlockZ(z_offset));
 				int earlyXPos = chunkPos.getBlockX(x_offset);
 				int earlyZPos = chunkPos.getBlockZ(z_offset);
-				//Apply a box blur to our thickness value to fight a weeeeeird problem with random XZ planes of spiked values.
-				//Probably a fastnoiselite artifact.
-				float chn_o = this.getCaveThicknessNoise(earlyXPos, earlyZPos);
-				float chn_1 = this.getCaveThicknessNoise(earlyXPos + 1, earlyZPos);
-				float chn_2 = this.getCaveThicknessNoise(earlyXPos + 1, earlyZPos + 1);
-				float chn_3 = this.getCaveThicknessNoise(earlyXPos + 1, earlyZPos - 1);
-				float chn_4 = this.getCaveThicknessNoise(earlyXPos - 1, earlyZPos);
-				float chn_5 = this.getCaveThicknessNoise(earlyXPos - 1, earlyZPos + 1);
-				float chn_6 = this.getCaveThicknessNoise(earlyXPos - 1, earlyZPos - 1);
-				float chn_7 = this.getCaveThicknessNoise(earlyXPos, earlyZPos + 1);
-				float chn_8 = this.getCaveThicknessNoise(earlyXPos, earlyZPos - 1);
-				float caveHeightNoise = chn_o + chn_1 + chn_2 + chn_3 + chn_4 + chn_5 + chn_6 + chn_7 + chn_8;
-				caveHeightNoise /= 9f;
+				float caveHeightNoise = this.getCaveThicknessNoise(earlyXPos, earlyZPos);
 				int caveHeight = 0;
-
-				int xt = 9856;
-				int yt = 117;
-				int zt = 1336;
-				
-				boolean withinMainCave = true;
 				if(caveHeightNoise < 2) {
 					caveHeightNoise = ((1f + caveHeightNoise) / 2f) * (float) MAX_CAVE_SIZE_Y;
 					float caveHeightNoiseSquished = this.ySquish(caveHeightNoise);
 					caveHeight = (int) (caveHeightNoiseSquished * MAX_CAVE_SIZE_Y);
-
 					if(caveHeight <= 0) {
-						//v1
-						//CHANGED
-						//continue;
-						
-						//v2
-						withinMainCave = false;
+						continue;
 					}
 				} else {
 					caveHeight = (int) caveHeightNoise;
 				}
-				
 				float rawNoiseY = this.getCaveYNoise(earlyXPos, earlyZPos);
 				rawNoiseY = this.norm(rawNoiseY);
 				rawNoiseY = rawNoiseY > 1 ? 1 : (rawNoiseY < 0 ? 0 : rawNoiseY);
@@ -233,70 +233,23 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 				//CHANGED
 				//caveY = 4;
 				//caveHeight = 128;
-				caveHeight = 20;
 				
-				//for(int y_unadj = caveY + caveHeight; y_unadj > caveY; y_unadj--) {
-				for(int y_unadj = caveY + caveHeight; y_unadj > caveY; y_unadj--) {
-					int y_adj = y_unadj;
-					int yPos = y_unadj;
-					//CHANGED this.shouldAdjustY()
-					if(false){
-						y_adj = y_unadj - 64;
-						yPos = y_unadj - 64;
-					}
-					if(y_adj <= -64) {
-						CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest below -64!");
-						continue;
-					}
-
+				mPos.set(earlyXPos, 0, earlyZPos);
+				airPositions = this.generateAirPositionsUsingSkipCarving(mPos, caveY, caveHeight);
+				
+				//Air positions actual carve
+				for(int y: airPositions) {
+					//
+					mPos.setY(y);
 					
-					int xPos = chunkPos.getBlockX(x_offset);
-					//int yPos = y_unadj - 64;
-					//int y_adj = y_unadj - 64;
-					int zPos = chunkPos.getBlockZ(z_offset);
-					mPos.set(xPos, y_adj, zPos);
-					if(!level.getBlockState(mPos).getMaterial().isSolid()) {
-						continue;
-					}
-
-					float nf_o = this.getWarpedNoise(xPos, yPos*2, zPos);
-					float noiseFound = nf_o;
-					
-					if(nf_o <= this.getNoiseThreshold(xPos, zPos)) {
-						float nf_1 = this.getWarpedNoise(xPos + 1, yPos*2, zPos);
-						float nf_2 = this.getWarpedNoise(xPos - 1, yPos*2, zPos);
-						float nf_3 = this.getWarpedNoise(xPos + 1, yPos*2, zPos + 1);
-						float nf_4 = this.getWarpedNoise(xPos - 1, yPos*2, zPos + 1);
-						float nf_5 = this.getWarpedNoise(xPos + 1, yPos*2, zPos - 1);
-						float nf_6 = this.getWarpedNoise(xPos - 1, yPos*2, zPos - 1);
-						float nf_7 = this.getWarpedNoise(xPos, yPos*2, zPos + 1);
-						float nf_8 = this.getWarpedNoise(xPos, yPos*2, zPos - 1);
-						noiseFound = nf_o + nf_1 + nf_2 + nf_3 + nf_4 + nf_5 + nf_6 + nf_7 + nf_8;
-						noiseFound /= 9f;
-					}
-					boolean shouldCarve = noiseFound > this.getNoiseThreshold(xPos, zPos); //noiseFound > this.getNoiseThreshold(xPos, zPos); //was 0.08
-					
-					if(shouldCarve) {
-
-						if(earlyXPos == xt && earlyZPos == zt) {
-							//CaveOverhaul.LOGGER.error("[New Caves] 5@"+this.getClass().getName()+" -> Carving @ " + y_adj);
+					try {
+						boolean setToLiquid = this.carveBlock(ctx, cfg, level, pos2BiomeMapping, mask, mPos, unkPos, aquifer, mBool);
+						if(!setToLiquid) {
+							mask.set(mPos.getX(), mPos.getY(), mPos.getZ());
 						}
-						
-						chunkCenter.set(chunkPos.getBlockX(0), yPos, chunkPos.getBlockX(0));
-						if(mPos.distManhattan(chunkCenter) > 8) {
-							//continue;
-						}
-						
-						try {
-							boolean setToLiquid = this.carveBlock(ctx, cfg, level, pos2BiomeMapping, mask, mPos, unkPos, aquifer, mBool);
-							if(!setToLiquid) {
-								mask.set(mPos.getX(), mPos.getY(), mPos.getZ());
-							}
-							//BlockState reqState = _aquifer.computeSubstance(new DensityFunction.SinglePointContext(mPos.getX(), mPos.getY(), mPos.getZ()), 0.0D);
-							LevelAccessor access = level.getWorldForge();
-						} catch (ArrayIndexOutOfBoundsException e){
-							CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest real error");
-						}
+						LevelAccessor access = level.getWorldForge();
+					} catch (ArrayIndexOutOfBoundsException e){
+						CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest real error");
 					}
 				}
 			}
@@ -310,11 +263,131 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		return true;
 	}
 	
+	protected List<Integer> generateAirPositionsUsingSkipCarving(MutableBlockPos mPos, int caveY, int caveHeight){
+		List<Integer> airPositions = new ArrayList<>();
+		
+		boolean carvePrevPosition = false;
+		boolean firstCheck = true;
+		int y_adj = 300;
+		for(int y_unadj = caveY + caveHeight; y_unadj > caveY; y_unadj -= SKIP_AMOUNT) {
+			y_adj = y_unadj;
+			int yPos = y_unadj;
+
+			if(y_adj <= -64) {
+				CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest below -64!");
+				continue;
+			}
+			
+			float noiseFound = this.getWarpedNoise(mPos.getX(), yPos*2, mPos.getZ());
+			boolean shouldCarve = noiseFound > this.getNoiseThreshold(mPos.getX(), mPos.getZ()); //noiseFound > this.getNoiseThreshold(xPos, zPos); //was 0.08
+			
+			if(shouldCarve) {
+				if(firstCheck) {
+					//32; 30; 34
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y > y_adj - SKIP_AMOUNT; t_y--) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					firstCheck = false;
+				} else if(!carvePrevPosition) {
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y > y_adj - SKIP_AMOUNT; t_y--) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+				} else {
+					//Just fill in missing air pockets
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+						airPositions.add(t_y);
+					}
+				}
+				carvePrevPosition = true;
+				airPositions.add(y_adj);
+			} else {
+				if(firstCheck) {
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y > y_adj - SKIP_AMOUNT; t_y--) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					firstCheck = false;
+				} else if(carvePrevPosition) {
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y > y_adj - SKIP_AMOUNT; t_y--) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+					for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+						mPos.setY(t_y);
+						float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+						boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+						if(shouldCarveSC) {
+							airPositions.add(t_y);
+						}
+					}
+				} else {
+					//do nothing as it's a stone to stone span
+				}
+				carvePrevPosition = false;
+			}
+		}
+		
+		if(y_adj < 300) {
+			for (int t_y = y_adj; t_y > -64 && t_y < 320 && t_y < y_adj + SKIP_AMOUNT; t_y++) {
+				mPos.setY(t_y);
+				float noiseFoundSC = this.getWarpedNoise(mPos.getX(), mPos.getY()*2, mPos.getZ());
+				boolean shouldCarveSC = noiseFoundSC > this.getNoiseThreshold(mPos.getX(), mPos.getZ());
+				if(shouldCarveSC) {
+					airPositions.add(t_y);
+				}
+			}
+		}
+		
+		return airPositions;
+	}
+	
 	protected boolean shouldAdjustY() {
 		return true;
 	}
 
-	public static float getNoiseThreshold(float x, float z) {
+	protected float getNoiseThreshold(float x, float z) {
 		//default 0.08
 		return 0.15f;
 		//New system: Scale the threshold from 1 (do not draw) to 0.08 (draw) based on noise
@@ -363,7 +436,7 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		
 	}
 	
-	public static float ySquish(float noiseHeight) {
+	public float ySquish(float noiseHeight) {
 		float caveOffset = ((float) MAX_CAVE_SIZE_Y) / 2f; //(float)MAX_CAVE_SIZE_Y/4f; //if 32, becomes 8. Noise is usually a normal distribution with the mean being MAX/2.
 		float k = 2f; //1f = 8 tiles from 1 to 0, 2f = 4 tiles, 16f for an outgoing range of [0, 1]
 		//Use https://www.desmos.com/calculator
@@ -392,7 +465,7 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		
 	}
 	
-	public static float norm(float f) {
+	public float norm(float f) {
 		return (1f + f) / 2f;
 	}
 	
@@ -401,25 +474,13 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
     }
 
 	
-    /* **CHANGED**
-     * v2 change:
-     * 1. disable yPos>=0 -> return no warp
-     * 2. make warpslide slide from 64 to -64
-     * 3. Make y > 0 iterate 1 time
-     * 4. Make the warp coord offsets dependent on y pos, slide between 5 and 30?
-     * 		64 -> 0: 5 -> 10
-     * 		0 -> -64: 10 -> 30
-     */
-	protected static float getWarpedNoise(int xPos, int yPos, int zPos) {
+	protected float getWarpedNoise(int xPos, int yPos, int zPos) {
 
 		//CHANGED, was true
-		//v2 change
-		/*
 		if(yPos >= 0)
 		{
-			return getCaveDetailsNoise(xPos, yPos, zPos);
+			return this.getCaveDetailsNoise(xPos, yPos, zPos);
 		}
-		*/
 			
 		if(domainWarp == null) {
 			initDomainWarp();
@@ -429,14 +490,7 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		//Integer[] offsetsY = {23, 29, 31, 37, 41};
 		Integer[] offsetsZ = {101, 67, 59, 41, 5, 7};
 
-		//CHANGED
-		//v1
-		//float warpSlide = 25f * ( -yPos / 64f);
-		
-		//v2
-		int tYPos = yPos + 64;
-		float warpSlide = 25f * ( tYPos / 128f);
-		
+		float warpSlide = 25f * ( -yPos / 64f);
 		float yOrig = yPos / 2f;
 		float yAdjPart = ( -yPos / 64f);
 		float yAdj = 2f - yAdjPart;
@@ -445,75 +499,25 @@ public abstract class NoiseCavernBaseFixFromNewCaves extends CaveWorldCarver {
 		float warpY = yPos;
 		float warpZ = zPos;
 		//warpY = yAdj;
-		//CHANGED
-		//v1
-		//int iterAmounts = 3;
-		//int warpOffset = 20;
-		
-		//v2 change
-		int iterAmounts = yPos >= 0 ? 2 : 3;
-		float yPosClamped = yPos > 64 ? 64f : (float) yPos;
-		float warpOffsetF = yPos >= 0 ? ((yPosClamped / 64f) * 5f) + 5f : (((-yPosClamped) / 64f) * 20f) + 10f;
-		int warpOffset = Math.round(warpOffsetF);
-		
-		for(int i = 0; i < iterAmounts; i++) {
+		for(int i = 0; i < 3; i++) {
 			//CHANGED
 			//Not applying an offset to warpX is intentional.
 			//The location for warpX can be anywhere, so it's ok that there's no offset. It hsould have no skew change or anything.
-			warpY += domainWarp.GetNoise(warpX, warpY, warpZ) * warpSlide; //was 5 with pretty incredible results
-			warpX += domainWarp.GetNoise(warpX + warpOffset, warpY + warpOffset, warpZ + warpOffset) * warpSlide;
-			warpZ += domainWarp.GetNoise(warpX - warpOffset, warpY - warpOffset, warpZ - warpOffset) * warpSlide;
+			warpX += domainWarp.GetNoise(warpX, warpY, warpZ) * 25f; //was 5 with pretty incredible results
+			warpY += domainWarp.GetNoise(warpX + 20, warpY + 20, warpZ + 20) * warpSlide;
+			warpZ += domainWarp.GetNoise(warpX - 20, warpY - 20, warpZ - 20) * warpSlide;
 		}
 		
-		return getCaveDetailsNoise(warpX, warpY, warpZ);
+		return this.getCaveDetailsNoise(warpX, warpY, warpZ);
 	}
 
 	//Override this for non-cavern noise
-	public static float getCaveDetailsNoise(float x, float y, float z) {
+	protected float getCaveDetailsNoise(float x, float y, float z) {
 		if(noise == null) {
-			initNoiseStatic();
+			initNoise();
 		}
 		
 		return noise.GetNoise(x, y, z);
 	}
-
-
-	
-	public static boolean shouldCarveBasedOnHeightStatic(float x, float y, float z, int caveHeight, int caveY) {
-		
-		/*
-		 * Keep in superclass
-		 */
-		
-		int y_adj = (int) y;
-		int yPos = (int) y;
-		
-		int xPos = (int) x;
-		int zPos = (int) z;
-		
-		if(yPos < caveY || yPos > caveY + caveHeight) {
-			return false;
-		}
-		
-		float noiseFound = getWarpedNoise(xPos, yPos*2, zPos);
-		
-		boolean shouldCarve = noiseFound > getNoiseThreshold(xPos, zPos);
-		
-		return shouldCarve;
-	}
-	
-	/*
-	public static float getCaveThicknessNoiseStatic(int x, int z) {
-		return 0;
-	}
-	
-	public static float getCaveYNoiseStatic(int x, int z) {
-		return 0;
-	}
-	
-	public static int getCaveYStatic(float y) {
-		return 0;
-	}
-	*/
 
 }

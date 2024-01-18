@@ -3,6 +3,7 @@ package wftech.caveoverhaul.utils;
 import net.minecraft.world.level.block.Blocks;
 import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer1;
 import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer2;
+import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayerAbsolute;
 import wftech.caveoverhaul.carvertypes.NoiseCavernMiddleLayer1;
 import wftech.caveoverhaul.carvertypes.NoiseCavernMiddleLayer2;
 import wftech.caveoverhaul.carvertypes.NoiseCavernTopLayer1;
@@ -42,6 +43,10 @@ public class NoiseChunkMixinUtils {
 	}
 	
 	public static boolean shouldSetToLava(int topY, int x, int y, int z) {
+		
+		if(y <= -56 && shouldSetToAirCaverns(topY, x, y, z)) {
+			return true;
+		}
 
 		if(NoiseUndergroundRiver_Layer1_Lava1.INSTANCE.isLava(x, y, z)) {
 			return true;
@@ -167,6 +172,8 @@ public class NoiseChunkMixinUtils {
 		if( NoiseCavernBottomLayer1.shouldCarve(x, y, z) ) {
 			return true;
 		} else if( NoiseCavernBottomLayer2.shouldCarve(x, y, z) ) {
+			return true;
+		} else if( NoiseCavernBottomLayerAbsolute.shouldCarve(x, y, z) ) {
 			return true;
 		} else if( NoiseCavernMiddleLayer1.shouldCarve(x, y, z) ) {
 			return true;

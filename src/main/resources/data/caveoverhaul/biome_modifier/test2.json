@@ -1,6 +1,0 @@
-{
-  "type": "caveoverhaul:cr_add_carvers",
-  "biomes": "#is_end",
-  "carvers": "minecraft:canyon",
-  "step": "underground_ores"
-}

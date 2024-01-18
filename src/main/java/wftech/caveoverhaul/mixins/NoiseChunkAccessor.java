@@ -13,7 +13,7 @@ public interface NoiseChunkAccessor {
 
 	@Accessor("noiseSettings")
 	public NoiseSettings getNoiseSettings();
-
+	
 	@Accessor("blockStateRule")
 	public BlockStateFiller getBlockStateRule();
 
