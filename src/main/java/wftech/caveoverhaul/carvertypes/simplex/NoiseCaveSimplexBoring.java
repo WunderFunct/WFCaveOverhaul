@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import wftech.caveoverhaul.carvertypes.NoiseCavernBaseNewCavesDEPRECATED;
+import wftech.caveoverhaul.carvertypes.NoiseCavernBaseNewCaves;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
@@ -53,7 +53,7 @@ public class NoiseCaveSimplexBoring extends NoiseCavernBaseSimplex {
 	
 	private void initYNoise() {
 
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -71,7 +71,7 @@ public class NoiseCaveSimplexBoring extends NoiseCavernBaseSimplex {
 	
 	public void initCaveHeightMap() {
 		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset + 1;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -88,7 +88,7 @@ public class NoiseCaveSimplexBoring extends NoiseCavernBaseSimplex {
 	
 	public static void initCaveHeightMapStatic() {
 		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset + 1;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -105,31 +105,6 @@ public class NoiseCaveSimplexBoring extends NoiseCavernBaseSimplex {
 	
 	public void initDetailNoise() {
 
-		
-		/*
-		 * Yung's
-		this.noiseThreshold = 0.82;
-		this.fractalOctaves = 1;
-		this.fractalGain = 0.3;
-		this.fractalFrequency = 0.025;
-		this.numGenerators = 2;
-		this.yAdjust = true;
-		this.yAdjustF1 = 0.95;
-		this.yAdjustF2 = 0.5;
-		this.noiseType = "SimplexFractal";
-		 */
-		//Only for private release
-		/*
-		FastNoise tnoise = new FastNoise();
-		tnoise.SetSeed(0);
-		tnoise.SetFractalOctaves(1);
-		tnoise.SetNoiseType(NoiseType.SimplexFractal);
-		tnoise.SetFractalGain(0.3f);
-		tnoise.SetFrequency(0.025f);
-		//tnoise.SetFractalType(FractalType.FBM);
-		tnoise.SetFractalType(FractalType.FBM);
-		*/
-		
 		/*
 		 * 
             this.noiseThreshold = 0.95;
@@ -144,7 +119,7 @@ public class NoiseCaveSimplexBoring extends NoiseCavernBaseSimplex {
 		 */
 
 		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset + 1;
 
 		/*

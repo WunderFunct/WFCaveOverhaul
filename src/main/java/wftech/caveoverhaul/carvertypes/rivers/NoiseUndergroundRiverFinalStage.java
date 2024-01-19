@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +30,7 @@ public class NoiseUndergroundRiverFinalStage extends CaveWorldCarver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private Random random;
+	private RandomSource random;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
 
@@ -38,7 +39,7 @@ public class NoiseUndergroundRiverFinalStage extends CaveWorldCarver {
 	}
 	
 	@Override
-	public boolean isStartChunk(CaveCarverConfiguration p_224894_, Random p_224895_) {
+	public boolean isStartChunk(CaveCarverConfiguration p_224894_, RandomSource p_224895_) {
 		return true;
 	}
 
@@ -48,7 +49,7 @@ public class NoiseUndergroundRiverFinalStage extends CaveWorldCarver {
 		CaveCarverConfiguration cfg, 
 		ChunkAccess level, 
 		Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		Random random, 
+		RandomSource random, 
 		Aquifer _aquifer, 
 		ChunkPos chunkPos_, 
 		CarvingMask mask) {

@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +41,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
 		super(p_159194_);
 	}
 	
-    public int getCaveY(Random p_230361_1_, boolean shallow) {
+    public int getCaveY(RandomSource p_230361_1_, boolean shallow) {
     	if(shallow) {
     		return 130 - p_230361_1_.nextInt(p_230361_1_.nextInt(120) + 1); //130 = average y I'd like the caves to start at
     	} else {
@@ -50,7 +50,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
     }
     
     @Override
-    protected float getThickness(Random p_230359_1_) {
+    protected float getThickness(RandomSource p_230359_1_) {
         float lvt_2_1_ = p_230359_1_.nextFloat() * 2.0f + p_230359_1_.nextFloat();
         if (p_230359_1_.nextInt(10) == 0) {
             lvt_2_1_ *= p_230359_1_.nextFloat() * p_230359_1_.nextFloat() * 3.0f + 1.0f;
@@ -58,7 +58,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
         return lvt_2_1_;
     }
     
-    public void generateVerticalCluster(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, Random random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask, int i, int j, boolean shallow) {
+    public void generateVerticalCluster(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, RandomSource random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask, int i, int j, boolean shallow) {
 
         double d0 = (double)chunkPos.getBlockX(random.nextInt(16 * 16));
         double d1 = (double) this.getCaveY(random, shallow) - (shallow ? 0 : 64);
@@ -168,7 +168,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
     		CaveCarverConfiguration config, 
     		ChunkAccess chunk, 
     		Function<BlockPos, Holder<Biome>> posToBiomeMapping, 
-    		Random random, 
+    		RandomSource random, 
     		Aquifer aquifer, 
     		ChunkPos chunkPos, 
     		CarvingMask mask, 
@@ -244,7 +244,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
         }
     }
     
-    protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Random random, ChunkPos chunkPos) {
+    protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos) {
     	return true;
     }
 
@@ -254,7 +254,7 @@ public class OldWorldCarverv12_original extends CaveWorldCarver {
 		   CaveCarverConfiguration cfg, 
 		   ChunkAccess level, 
 		   Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		   Random random, 
+		   RandomSource random, 
 		   Aquifer aquifer, 
 		   ChunkPos chunkPos, 
 		   CarvingMask mask) {

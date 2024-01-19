@@ -84,7 +84,7 @@ public class JsonConfigCarvers {
 		//Removing the final stage carver as it runs out of order- I add it to the RESOURCES_TO_ADD listings
 		//because the BiomeModifier will grab it and put it aside, then I delete it since I don't actually want it
 		//to apply at the normal stage :)
-		//RESOURCES_TO_DELETE.add(new ResourceLocation("caveoverhaul", "noise_underground_rivers_final_stage"));
+		RESOURCES_TO_DELETE.add(new ResourceLocation("caveoverhaul", "noise_underground_rivers_final_stage"));
 			
 	}
 	

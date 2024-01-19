@@ -1,0 +1,6 @@
+{
+  "type": "caveoverhaul:add_carver",
+  "biomes": "#is_overworld",
+  "carvers": "caveoverhaul:caves_noise_distribution",
+  "step": "underground_ores"
+}

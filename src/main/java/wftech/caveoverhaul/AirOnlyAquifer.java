@@ -1,6 +1,9 @@
 package wftech.caveoverhaul;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -8,7 +11,9 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Aquifer.NoiseBasedAquifer;
 import net.minecraft.world.level.levelgen.DensityFunction.FunctionContext;
+import net.minecraft.world.level.levelgen.DensityFunction.SinglePointContext;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
@@ -17,14 +22,25 @@ public class AirOnlyAquifer implements Aquifer {
 
 	protected ChunkAccess level = null;
 	protected boolean exposeToAir = false;
+	protected int x = 0;
+	protected int y = 0;
+	protected int z = 0;
 	
 	public AirOnlyAquifer(ChunkAccess level, boolean exposeToAir) {
 		this.level = level;
 		this.exposeToAir = exposeToAir;
 	}
 	
+	public AirOnlyAquifer(ChunkAccess chunkPrimer, boolean b, int blockX, int yIter, int blockZ) {
+		this.level = chunkPrimer;
+		this.exposeToAir = b;
+		this.x = blockX;
+		this.y = yIter;
+		this.z = blockZ;
+	}
+
 	public boolean isLiquid(BlockState state) {
-		return state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.WATER || state.getMaterial().isLiquid();
+		return state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.WATER || state.liquid();
 	}
 
 	@Override

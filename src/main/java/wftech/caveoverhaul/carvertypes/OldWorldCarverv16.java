@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.CarvingMask;
@@ -33,7 +33,7 @@ public class OldWorldCarverv16 extends CaveWorldCarver {
 		super(p_159194_);
 	}
 	
-	public int getCaveY(Random p_230361_1_, boolean shallow) {
+	public int getCaveY(RandomSource p_230361_1_, boolean shallow) {
 		if(shallow) {
 			return 130 - p_230361_1_.nextInt(p_230361_1_.nextInt(120) + 1); //130 = average y I'd like the caves to start at
 		} else {
@@ -46,7 +46,7 @@ public class OldWorldCarverv16 extends CaveWorldCarver {
 			CaveCarverConfiguration cfg, 
 			ChunkAccess level, 
 			Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-			Random random, 
+			RandomSource random, 
 			Aquifer aquifer, 
 			ChunkPos chunkPos, 
 			CarvingMask mask, 
@@ -104,7 +104,7 @@ public class OldWorldCarverv16 extends CaveWorldCarver {
 		}
 	}
 		
-	public void generateRoomCluster(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, Random random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask, int i, int j, boolean shallow) {
+	public void generateRoomCluster(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, RandomSource random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask, int i, int j, boolean shallow) {
 
 		double d0 = (double)chunkPos.getBlockX(random.nextInt(16 * 16));
 		double d1 = (double)this.getCaveY(random, shallow) - (shallow ? 0 : 64);
@@ -157,7 +157,7 @@ public class OldWorldCarverv16 extends CaveWorldCarver {
 	}
 
 	@Override
-	public boolean carve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, Random random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask) {
+	public boolean carve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Function<BlockPos, Holder<Biome>> pos2BiomeMapping, RandomSource random, Aquifer aquifer, ChunkPos chunkPos, CarvingMask mask) {
 		int i = SectionPos.sectionToBlockCoord(this.getRange() * 2 - 1);
 		int j = random.nextInt(random.nextInt(random.nextInt(this.getCaveBound()) + 1) + 1) + random.nextInt(2, 8); // was +1 at the end
 		Aquifer airAquifer = new AirOnlyAquifer(level, random.nextFloat() <=  0.3f);

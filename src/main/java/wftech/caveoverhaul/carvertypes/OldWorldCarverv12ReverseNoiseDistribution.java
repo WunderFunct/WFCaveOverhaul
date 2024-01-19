@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,9 +36,8 @@ public class OldWorldCarverv12ReverseNoiseDistribution extends OldWorldCarverv12
 	}
 	
 	@Override
-    protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, Random random, ChunkPos chunkPos_) {
+    protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos_) {
 
-        
 		if(NoiseCavernBottomLayer1.caveSizeNoise == null) {
 			NoiseCavernBottomLayer1.initCaveHeightMapStatic();
 		}
@@ -89,9 +88,9 @@ public class OldWorldCarverv12ReverseNoiseDistribution extends OldWorldCarverv12
 		
 		float avgHeight = totalHeights / numChecked;
 		//float avgHeight = maxHeight;
-		avgHeight *= (float) NoiseCavernBaseNewCavesDEPRECATED.MAX_CAVE_SIZE_Y;
-		float noiseToSquish = avgHeight = ((1f + avgHeight) / 2f) * (float) NoiseCavernBaseNewCavesDEPRECATED.MAX_CAVE_SIZE_Y;
-		float squished = NoiseCavernBaseNewCavesDEPRECATED.ySquishSatic(noiseToSquish);
+		avgHeight *= (float) NoiseCavernBaseNewCaves.MAX_CAVE_SIZE_Y;
+		float noiseToSquish = avgHeight = ((1f + avgHeight) / 2f) * (float) NoiseCavernBaseNewCaves.MAX_CAVE_SIZE_Y;
+		float squished = NoiseCavernBaseNewCaves.ySquishSatic(noiseToSquish);
 
 		/*
 		 * 0.15 or 0.1 if squished = 0 (avg of heights implies low density)
@@ -107,16 +106,15 @@ public class OldWorldCarverv12ReverseNoiseDistribution extends OldWorldCarverv12
 		odds2 = odds2 < 0.05 ? 0.05f : odds2;
 		*/
 		
-		//was min = 0.03, max = 0.07
 		float odds2 = 1f - squished;
-		odds2 *= 0.05;
-		odds2 = odds2 < 0.05 ? 0.07f : odds2;
+		odds2 *= 0.035;
+		odds2 = odds2 < 0.035 ? 0.035f : odds2;
 		
 		return random.nextFloat() <= odds2;
     }
 	
 	@Override
-	public boolean isStartChunk(CaveCarverConfiguration p_224894_, Random p_224895_) {
+	public boolean isStartChunk(CaveCarverConfiguration p_224894_, RandomSource p_224895_) {
 		return true;
 	}
 	

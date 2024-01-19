@@ -6,7 +6,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.CarvingMask;
@@ -25,7 +25,7 @@ public class VanillaCanyon extends CanyonWorldCarver {
 	}
 	
 	@Override
-	public boolean isStartChunk(CanyonCarverConfiguration cfg, Random random) {
+	public boolean isStartChunk(CanyonCarverConfiguration cfg, RandomSource random) {
 		float flt = random.nextFloat();
 		return flt <= cfg.probability;
 	}
@@ -36,7 +36,7 @@ public class VanillaCanyon extends CanyonWorldCarver {
 			CanyonCarverConfiguration p_224814_, 
 			ChunkAccess chunkAccess, 
 			Function<BlockPos, Holder<Biome>> p_224816_, 
-			Random p_224817_, 
+			RandomSource p_224817_, 
 			Aquifer aquifer, 
 			ChunkPos p_224819_, 
 			CarvingMask p_224820_) {

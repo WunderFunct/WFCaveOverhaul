@@ -40,7 +40,7 @@ public class NoiseCavernBottomLayerAbsolute extends NoiseCavernBaseFixFromNewCav
 	
 	private void initYNoise() {
 
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -58,7 +58,7 @@ public class NoiseCavernBottomLayerAbsolute extends NoiseCavernBaseFixFromNewCav
 	
 	public void initCaveHeightMap() {
 		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset + 1;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -106,7 +106,7 @@ public class NoiseCavernBottomLayerAbsolute extends NoiseCavernBaseFixFromNewCav
 			return;
 		}
 
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
@@ -127,7 +127,7 @@ public class NoiseCavernBottomLayerAbsolute extends NoiseCavernBaseFixFromNewCav
 			return;
 		}
 		
-		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
+		int seed = (int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed(); //(int) this.ctx.randomState().legacyLevelSeed();
 		seed += seedOffset + 1;
 		
 		FastNoiseLite tnoise = new FastNoiseLite();

@@ -1,7 +1,6 @@
 package wftech.caveoverhaul.carvertypes.simplex;
 
 import java.util.HashMap;
-import java.util.Random;
 
 /*
  * Wall fix:
@@ -22,12 +21,12 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -58,7 +57,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private Random random;
+	private RandomSource random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
@@ -80,7 +79,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 		}		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.025f); //was 0.01
 		tnoise.SetFractalType(FractalType.FBm);
@@ -98,7 +97,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 	protected void initDomainWarp() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.01f);
 		domainWarp = tnoise;
@@ -110,7 +109,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 		CaveCarverConfiguration cfg, 
 		ChunkAccess level, 
 		Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		Random random, 
+		RandomSource random, 
 		Aquifer _aquifer, 
 		ChunkPos chunkPos_, 
 		CarvingMask mask) {
@@ -174,7 +173,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 						yPos = y_unadj - 64;
 					}
 					if(y_adj <= -64) {
-						//CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest below -64!");
+						CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest below -64!");
 						continue;
 					}
 					
@@ -183,7 +182,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 					//int y_adj = y_unadj - 64;
 					int zPos = chunkPos.getBlockZ(z_offset);
 					mPos.set(xPos, y_adj, zPos);
-					if(!level.getBlockState(mPos).getMaterial().isSolid()) {
+					if(!level.getBlockState(mPos).isSolid()) {
 						continue;
 					}
 					
@@ -205,7 +204,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 							//BlockState reqState = _aquifer.computeSubstance(new DensityFunction.SinglePointContext(mPos.getX(), mPos.getY(), mPos.getZ()), 0.0D);
 							LevelAccessor access = level.getWorldForge();
 						} catch (ArrayIndexOutOfBoundsException e){
-							//CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest real error");
+							CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest real error");
 						}
 					}
 				}
@@ -306,7 +305,7 @@ public abstract class NoiseCavernBaseSimplex extends CaveWorldCarver {
 		return (1f + f) / 2f;
 	}
 	
-    public int getCaveY(Random p_230361_1_) {
+    public int getCaveY(RandomSource p_230361_1_) {
 	    return p_230361_1_.nextInt(p_230361_1_.nextInt(p_230361_1_.nextInt(120 + 64) + 1) + 1) - 64;
     }
 

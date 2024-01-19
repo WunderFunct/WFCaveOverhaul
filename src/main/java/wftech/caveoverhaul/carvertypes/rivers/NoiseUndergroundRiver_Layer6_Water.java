@@ -16,6 +16,8 @@ import java.util.Random;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import com.mojang.serialization.Codec;
 
@@ -24,6 +26,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
@@ -67,7 +70,7 @@ public class NoiseUndergroundRiver_Layer6_Water extends NoiseUndergroundRiver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private Random random;
+	private RandomSource random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
@@ -101,6 +104,9 @@ public class NoiseUndergroundRiver_Layer6_Water extends NoiseUndergroundRiver {
 		//40 is the midpoint
 		float min = 18;
 		float max = (18) + 8; //3
+		if(!CaveOverhaul.ENABLE_MULTILAYER_RIVERS){
+			return (int) min;
+		}
 		float diffSize = max - min;
 		return (int) (noiseValue * (diffSize)) + (int) min;
 	}
@@ -134,7 +140,7 @@ public class NoiseUndergroundRiver_Layer6_Water extends NoiseUndergroundRiver {
 	protected void initNoise() {		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset + 2);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset + 2);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.003f); //CHANGED was 0.003
 		tnoise.SetFractalType(FractalType.Ridged);
@@ -147,7 +153,7 @@ public class NoiseUndergroundRiver_Layer6_Water extends NoiseUndergroundRiver {
 	protected void initNoiseYLevel() {
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.002f);
 				
@@ -158,7 +164,7 @@ public class NoiseUndergroundRiver_Layer6_Water extends NoiseUndergroundRiver {
 	protected void initShouldCarveNoise() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed() + seedOffset + 1);
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed() + seedOffset + 1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.0015f);
 		mNoiseShouldCarveBase = tnoise;

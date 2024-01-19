@@ -22,7 +22,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Holder;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
@@ -46,7 +46,7 @@ import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
 
-public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver {
+public abstract class NoiseCavernBaseNewCaves extends CaveWorldCarver {
 
 	public static int MAX_CAVE_SIZE_Y = 20;
 	public static Map<Float, Float> YSQUISH_CACHE = new HashMap<>();
@@ -59,12 +59,12 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private Random random;
+	private RandomSource random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
 	
-	public NoiseCavernBaseNewCavesDEPRECATED(Codec<CaveCarverConfiguration> p_159194_) {
+	public NoiseCavernBaseNewCaves(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 		// TODO Auto-generated constructor stub
 	}
@@ -82,7 +82,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 		
 		/*
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetFractalOctaves(1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFractalGain(0.3f);
@@ -92,7 +92,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 		
 
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFrequency(0.025f); //was 0.01
 		tnoise.SetFractalType(FractalType.FBm);
@@ -110,7 +110,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 	protected void initDomainWarp() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.01f);
 		domainWarp = tnoise;
@@ -122,7 +122,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 		CaveCarverConfiguration cfg, 
 		ChunkAccess level, 
 		Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		Random random, 
+		RandomSource random, 
 		Aquifer _aquifer, 
 		ChunkPos chunkPos_, 
 		CarvingMask mask) {
@@ -195,7 +195,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 					//int y_adj = y_unadj - 64;
 					int zPos = chunkPos.getBlockZ(z_offset);
 					mPos.set(xPos, y_adj, zPos);
-					if(!level.getBlockState(mPos).getMaterial().isSolid()) {
+					if(!level.getBlockState(mPos).isSolid()) {
 						continue;
 					}
 					
@@ -318,7 +318,7 @@ public abstract class NoiseCavernBaseNewCavesDEPRECATED extends CaveWorldCarver 
 		return (1f + f) / 2f;
 	}
 	
-    public int getCaveY(Random p_230361_1_) {
+    public int getCaveY(RandomSource p_230361_1_) {
 	    return p_230361_1_.nextInt(p_230361_1_.nextInt(p_230361_1_.nextInt(120 + 64) + 1) + 1) - 64;
     }
 

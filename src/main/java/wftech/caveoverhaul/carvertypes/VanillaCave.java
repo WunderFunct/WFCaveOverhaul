@@ -1,12 +1,12 @@
 package wftech.caveoverhaul.carvertypes;
 
-import java.util.Random;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.CarvingMask;
@@ -30,7 +30,7 @@ public class VanillaCave extends CaveWorldCarver {
 			CaveCarverConfiguration p_224886_, 
 			ChunkAccess chunkAccess, 
 			Function<BlockPos, Holder<Biome>> p_224888_, 
-			Random p_224889_, 
+			RandomSource p_224889_, 
 			Aquifer aquifer, 
 			ChunkPos p_224891_, 
 			CarvingMask p_224892_) {

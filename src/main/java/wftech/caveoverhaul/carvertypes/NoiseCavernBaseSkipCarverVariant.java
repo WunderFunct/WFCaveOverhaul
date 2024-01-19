@@ -23,7 +23,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Holder;
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
@@ -97,7 +97,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
 	private Function<BlockPos, Holder<Biome>> biome;
-	private Random random;
+	private RandomSource random;
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
@@ -121,7 +121,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 		//Simplex
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetFractalOctaves(1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFractalGain(0.3f);
@@ -133,7 +133,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 		 * Too carvernous, not going to use
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.01f);
 		//tnoise.SetFractalType(FractalType.FBM);
@@ -145,7 +145,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 
 		/*
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetFractalOctaves(1);
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2); //SimplexFractal
 		tnoise.SetFractalGain(0.3f); //seems to top out at 3.5 though
@@ -164,7 +164,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 	protected void initDomainWarp() {
 		
 		FastNoiseLite tnoise = new FastNoiseLite();
-		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed());
+		tnoise.SetSeed((int) ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenOptions().seed());
 		tnoise.SetNoiseType(NoiseType.OpenSimplex2);
 		tnoise.SetFrequency(0.01f);
 		domainWarp = tnoise;
@@ -176,7 +176,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 		CaveCarverConfiguration cfg, 
 		ChunkAccess level, 
 		Function<BlockPos, Holder<Biome>> pos2BiomeMapping, 
-		Random random, 
+		RandomSource random, 
 		Aquifer _aquifer, 
 		ChunkPos chunkPos_, 
 		CarvingMask mask) {
@@ -469,7 +469,7 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 		return (1f + f) / 2f;
 	}
 	
-    public int getCaveY(Random p_230361_1_) {
+    public int getCaveY(RandomSource p_230361_1_) {
 	    return p_230361_1_.nextInt(p_230361_1_.nextInt(p_230361_1_.nextInt(120 + 64) + 1) + 1) - 64;
     }
 
