@@ -8,6 +8,6 @@ If you are interested in learning how this mod was made, please look at the mixi
 
 Likewise, if you are interested in modeling noise to make your own noise caverns, you can use the following to get started: https://auburn.github.io/FastNoiseLite/ Each pixel = one minecraft block.
 
-If you decide to use this code for your own modding adventures, this code uses FastNoise/FastNoiseLite, which requires you to use the GPLv2 license.
+If you decide to use this code for your own modding adventures, this code use an opensource library with a GPLv2 License, so please be sure to use the GPLv2 license for your project.
 
 Credits to YUNGNICKYUNG, Worley's Caves, and Mojang. Note that I didn't contact these individuals in the making of this mod, but I did reference their work when making this mod.
