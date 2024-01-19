@@ -1,0 +1,6 @@
+{
+  "type": "caveoverhaul:add_carver",
+  "biomes": "#is_overworld",
+  "carvers": "caveoverhaul:canyons",
+  "step": "underground_ores"
+}

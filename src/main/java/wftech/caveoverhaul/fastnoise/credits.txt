@@ -1,0 +1,6 @@
+I can't get shaded jars working.
+
+This is actually Auburn's FastNoise_Java :)
+
+VecMath stuff is from https://github.com/hharrison/vecmath/, which is a
+fork of javax stuff.
