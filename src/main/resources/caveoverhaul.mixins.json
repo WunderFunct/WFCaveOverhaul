@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "wftech.caveoverhaul.mixins",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"CaveCarverConfigurationAccessor",
+		"CaveWorldCarverAccessor",
+		"DedicatedServerMixin",
+		"IntegratedServerMixin",
+		"NoiseChunkAccessor",
+		"NoiseChunkMixin",
+		"NoiseRouterDataAccessor",
+		"RandomStateMixin",
+		"VeinTypeAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
