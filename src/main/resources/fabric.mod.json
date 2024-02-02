@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "caveoverhaul",
+	"version": "${version}",
+	"name": "CaveOverhaul",
+	"description": "Hello! Thank you for reading me!",
+	"authors": [
+		"W.F."
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "GPL-2.0",
+	"icon": "assets/caveoverhaul/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"wftech.caveoverhaul.CaveOverhaul"
+		]
+	},
+	"mixins": [
+		"caveoverhaul.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.6",
+		"minecraft": "~1.19.2",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	},
+	"accessWidener": "caveoverhaul.accessWidener"
+}
