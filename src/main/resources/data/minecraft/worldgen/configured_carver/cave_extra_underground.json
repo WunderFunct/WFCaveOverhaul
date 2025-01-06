@@ -1,9 +1,9 @@
 {
-  "type": "caveoverhaul:v12_caves",
+  "type": "minecraft:cave",
   "config": {
     "debug_settings": {
       "air_state": {
-        "Name": "minecraft:crimson_button",
+        "Name": "minecraft:oak_button",
         "Properties": {
           "face": "wall",
           "facing": "north",
@@ -42,7 +42,7 @@
     "lava_level": {
       "above_bottom": 8
     },
-    "probability": 1.0,
+    "probability": 0.00,
     "replaceable": "#minecraft:overworld_carver_replaceables",
     "vertical_radius_multiplier": {
       "type": "minecraft:uniform",
@@ -54,7 +54,7 @@
     "y": {
       "type": "minecraft:uniform",
       "max_inclusive": {
-        "absolute": 180
+        "absolute": 47
       },
       "min_inclusive": {
         "above_bottom": 8

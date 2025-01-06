@@ -1,5 +1,5 @@
 {
-  "type": "caveoverhaul:vanilla_canyon",
+  "type": "minecraft:canyon",
   "config": {
     "debug_settings": {
       "air_state": {
@@ -28,7 +28,7 @@
     "lava_level": {
       "above_bottom": 8
     },
-    "probability": 0.02,
+    "probability": 0.00,
     "replaceable": "#minecraft:overworld_carver_replaceables",
     "shape": {
       "distance_factor": {
@@ -67,12 +67,12 @@
     "y": {
       "type": "minecraft:uniform",
       "max_inclusive": {
-        "above_bottom": 48
+        "absolute": 67
       },
       "min_inclusive": {
-        "above_bottom": 8
+        "absolute": 10
       }
     },
-    "yScale": 3.01
+    "yScale": 3.0
   }
 }

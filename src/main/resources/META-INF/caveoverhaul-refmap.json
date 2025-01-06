@@ -1,0 +1,130 @@
+{
+  "mappings": {
+    "wftech/caveoverhaul/mixins/NoiseChunkAccessor": {
+      "blockStateRule": "f_209163_:Lnet/minecraft/world/level/levelgen/NoiseChunk$BlockStateFiller;",
+      "noiseSettings": "f_188717_:Lnet/minecraft/world/level/levelgen/NoiseSettings;",
+      "computePreliminarySurfaceLevel": "m_198249_(J)I"
+    },
+    "wftech/caveoverhaul/mixins/CarvingMaskMixin": {
+      "set(III)V": "Lnet/minecraft/world/level/chunk/CarvingMask;m_187585_(III)V"
+    },
+    "wftech/caveoverhaul/mixins/DFConstantMixin": {
+      "maxValue()D": "Lnet/minecraft/world/level/levelgen/DensityFunctions$Constant;m_207401_()D",
+      "minValue()D": "Lnet/minecraft/world/level/levelgen/DensityFunctions$Constant;m_207402_()D"
+    },
+    "wftech/caveoverhaul/mixins/NCFlatCacheMixin": {
+      "<init>(Lnet/minecraft/world/level/levelgen/NoiseChunk;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)V": "Lnet/minecraft/world/level/levelgen/NoiseChunk$FlatCache;<init>(Lnet/minecraft/world/level/levelgen/NoiseChunk;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)V"
+    },
+    "wftech/caveoverhaul/mixins/NoiseBasedAquiferMixin": {
+      "computeSubstance(Lnet/minecraft/world/level/levelgen/DensityFunction$FunctionContext;D)Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer;m_207104_(Lnet/minecraft/world/level/levelgen/DensityFunction$FunctionContext;D)Lnet/minecraft/world/level/block/state/BlockState;",
+      "shouldScheduleFluidUpdate()Z": "Lnet/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer;m_142203_()Z"
+    },
+    "wftech/caveoverhaul/mixins/NoiseChunkMixin": {
+      "<init>(ILnet/minecraft/world/level/levelgen/RandomState;IILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/DensityFunctions$BeardifierOrMarker;Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/world/level/levelgen/Aquifer$FluidPicker;Lnet/minecraft/world/level/levelgen/blending/Blender;)V": "Lnet/minecraft/world/level/levelgen/NoiseChunk;<init>(ILnet/minecraft/world/level/levelgen/RandomState;IILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/DensityFunctions$BeardifierOrMarker;Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/world/level/levelgen/Aquifer$FluidPicker;Lnet/minecraft/world/level/levelgen/blending/Blender;)V",
+      "getInterpolatedState()Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/levelgen/NoiseChunk;m_209247_()Lnet/minecraft/world/level/block/state/BlockState;"
+    },
+    "wftech/caveoverhaul/mixins/AquiferAccessor": {
+      "noiseChunk": "f_188407_:Lnet/minecraft/world/level/levelgen/NoiseChunk;"
+    },
+    "wftech/caveoverhaul/mixins/RandomStateMixin": {
+      "<init>(Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/core/HolderGetter;J)V": "Lnet/minecraft/world/level/levelgen/RandomState;<init>(Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/core/HolderGetter;J)V"
+    },
+    "wftech/caveoverhaul/mixins/NoiseRouterDataAccessor": {
+      "SLOPED_CHEESE": "f_209456_:Lnet/minecraft/resources/ResourceKey;",
+      "ZERO": "f_209446_:Lnet/minecraft/resources/ResourceKey;",
+      "noiseGradientDensity": "m_212271_(Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+      "yLimitedInterpolatable": "m_209471_(Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;III)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+      "DEPTH_LARGE": "f_209460_:Lnet/minecraft/resources/ResourceKey;",
+      "CONTINENTS": "f_209451_:Lnet/minecraft/resources/ResourceKey;",
+      "SPAGHETTI_2D": "f_209439_:Lnet/minecraft/resources/ResourceKey;",
+      "DEPTH_AMPLIFIED": "f_224424_:Lnet/minecraft/resources/ResourceKey;",
+      "getFunction": "m_255403_(Lnet/minecraft/core/HolderGetter;Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+      "FACTOR": "f_209454_:Lnet/minecraft/resources/ResourceKey;",
+      "FACTOR_AMPLIFIED": "f_224422_:Lnet/minecraft/resources/ResourceKey;",
+      "EROSION": "f_209452_:Lnet/minecraft/resources/ResourceKey;",
+      "SPAGHETTI_2D_THICKNESS_MODULATOR": "f_209438_:Lnet/minecraft/resources/ResourceKey;",
+      "slideOverworld": "m_224489_(ZLnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+      "NOODLE": "f_209465_:Lnet/minecraft/resources/ResourceKey;",
+      "EROSION_LARGE": "f_209458_:Lnet/minecraft/resources/ResourceKey;",
+      "Y": "f_209447_:Lnet/minecraft/resources/ResourceKey;",
+      "CONTINENTS_LARGE": "f_209457_:Lnet/minecraft/resources/ResourceKey;",
+      "SHIFT_Z": "f_209449_:Lnet/minecraft/resources/ResourceKey;",
+      "RIDGES": "f_209453_:Lnet/minecraft/resources/ResourceKey;",
+      "SHIFT_X": "f_209448_:Lnet/minecraft/resources/ResourceKey;",
+      "FACTOR_LARGE": "f_209459_:Lnet/minecraft/resources/ResourceKey;",
+      "DEPTH": "f_209455_:Lnet/minecraft/resources/ResourceKey;",
+      "postProcess": "m_224492_(Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;"
+    },
+    "wftech/caveoverhaul/mixins/ProtoChunkMixin": {
+      "setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/chunk/ProtoChunk;m_6978_(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"
+    },
+    "wftech/caveoverhaul/mixins/VanillaRegistriesAccessor": {
+      "BUILDER": "f_254635_:Lnet/minecraft/core/RegistrySetBuilder;"
+    }
+  },
+  "data": {
+    "searge": {
+      "wftech/caveoverhaul/mixins/NoiseChunkAccessor": {
+        "blockStateRule": "f_209163_:Lnet/minecraft/world/level/levelgen/NoiseChunk$BlockStateFiller;",
+        "noiseSettings": "f_188717_:Lnet/minecraft/world/level/levelgen/NoiseSettings;",
+        "computePreliminarySurfaceLevel": "m_198249_(J)I"
+      },
+      "wftech/caveoverhaul/mixins/CarvingMaskMixin": {
+        "set(III)V": "Lnet/minecraft/world/level/chunk/CarvingMask;m_187585_(III)V"
+      },
+      "wftech/caveoverhaul/mixins/DFConstantMixin": {
+        "maxValue()D": "Lnet/minecraft/world/level/levelgen/DensityFunctions$Constant;m_207401_()D",
+        "minValue()D": "Lnet/minecraft/world/level/levelgen/DensityFunctions$Constant;m_207402_()D"
+      },
+      "wftech/caveoverhaul/mixins/NCFlatCacheMixin": {
+        "<init>(Lnet/minecraft/world/level/levelgen/NoiseChunk;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)V": "Lnet/minecraft/world/level/levelgen/NoiseChunk$FlatCache;<init>(Lnet/minecraft/world/level/levelgen/NoiseChunk;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)V"
+      },
+      "wftech/caveoverhaul/mixins/NoiseBasedAquiferMixin": {
+        "computeSubstance(Lnet/minecraft/world/level/levelgen/DensityFunction$FunctionContext;D)Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer;m_207104_(Lnet/minecraft/world/level/levelgen/DensityFunction$FunctionContext;D)Lnet/minecraft/world/level/block/state/BlockState;",
+        "shouldScheduleFluidUpdate()Z": "Lnet/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer;m_142203_()Z"
+      },
+      "wftech/caveoverhaul/mixins/NoiseChunkMixin": {
+        "<init>(ILnet/minecraft/world/level/levelgen/RandomState;IILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/DensityFunctions$BeardifierOrMarker;Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/world/level/levelgen/Aquifer$FluidPicker;Lnet/minecraft/world/level/levelgen/blending/Blender;)V": "Lnet/minecraft/world/level/levelgen/NoiseChunk;<init>(ILnet/minecraft/world/level/levelgen/RandomState;IILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/DensityFunctions$BeardifierOrMarker;Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/world/level/levelgen/Aquifer$FluidPicker;Lnet/minecraft/world/level/levelgen/blending/Blender;)V",
+        "getInterpolatedState()Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/levelgen/NoiseChunk;m_209247_()Lnet/minecraft/world/level/block/state/BlockState;"
+      },
+      "wftech/caveoverhaul/mixins/AquiferAccessor": {
+        "noiseChunk": "f_188407_:Lnet/minecraft/world/level/levelgen/NoiseChunk;"
+      },
+      "wftech/caveoverhaul/mixins/RandomStateMixin": {
+        "<init>(Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/core/HolderGetter;J)V": "Lnet/minecraft/world/level/levelgen/RandomState;<init>(Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/core/HolderGetter;J)V"
+      },
+      "wftech/caveoverhaul/mixins/NoiseRouterDataAccessor": {
+        "SLOPED_CHEESE": "f_209456_:Lnet/minecraft/resources/ResourceKey;",
+        "ZERO": "f_209446_:Lnet/minecraft/resources/ResourceKey;",
+        "noiseGradientDensity": "m_212271_(Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+        "yLimitedInterpolatable": "m_209471_(Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;III)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+        "DEPTH_LARGE": "f_209460_:Lnet/minecraft/resources/ResourceKey;",
+        "CONTINENTS": "f_209451_:Lnet/minecraft/resources/ResourceKey;",
+        "SPAGHETTI_2D": "f_209439_:Lnet/minecraft/resources/ResourceKey;",
+        "DEPTH_AMPLIFIED": "f_224424_:Lnet/minecraft/resources/ResourceKey;",
+        "getFunction": "m_255403_(Lnet/minecraft/core/HolderGetter;Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+        "FACTOR": "f_209454_:Lnet/minecraft/resources/ResourceKey;",
+        "FACTOR_AMPLIFIED": "f_224422_:Lnet/minecraft/resources/ResourceKey;",
+        "EROSION": "f_209452_:Lnet/minecraft/resources/ResourceKey;",
+        "SPAGHETTI_2D_THICKNESS_MODULATOR": "f_209438_:Lnet/minecraft/resources/ResourceKey;",
+        "slideOverworld": "m_224489_(ZLnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;",
+        "NOODLE": "f_209465_:Lnet/minecraft/resources/ResourceKey;",
+        "EROSION_LARGE": "f_209458_:Lnet/minecraft/resources/ResourceKey;",
+        "Y": "f_209447_:Lnet/minecraft/resources/ResourceKey;",
+        "CONTINENTS_LARGE": "f_209457_:Lnet/minecraft/resources/ResourceKey;",
+        "SHIFT_Z": "f_209449_:Lnet/minecraft/resources/ResourceKey;",
+        "RIDGES": "f_209453_:Lnet/minecraft/resources/ResourceKey;",
+        "SHIFT_X": "f_209448_:Lnet/minecraft/resources/ResourceKey;",
+        "FACTOR_LARGE": "f_209459_:Lnet/minecraft/resources/ResourceKey;",
+        "DEPTH": "f_209455_:Lnet/minecraft/resources/ResourceKey;",
+        "postProcess": "m_224492_(Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;"
+      },
+      "wftech/caveoverhaul/mixins/ProtoChunkMixin": {
+        "setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;": "Lnet/minecraft/world/level/chunk/ProtoChunk;m_6978_(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"
+      },
+      "wftech/caveoverhaul/mixins/VanillaRegistriesAccessor": {
+        "BUILDER": "f_254635_:Lnet/minecraft/core/RegistrySetBuilder;"
+      }
+    }
+  }
+}

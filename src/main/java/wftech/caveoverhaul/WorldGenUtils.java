@@ -1,5 +1,7 @@
 package wftech.caveoverhaul;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import net.minecraft.core.HolderGetter;
@@ -10,13 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
-import net.minecraft.world.level.levelgen.NoiseRouter;
-import net.minecraft.world.level.levelgen.NoiseRouterData;
-import net.minecraft.world.level.levelgen.NoiseSettings;
-import net.minecraft.world.level.levelgen.Noises;
-import net.minecraft.world.level.levelgen.OreVeinifier;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
@@ -24,6 +20,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.utils.LazyLoadingSafetyWrapper;
 
 public class WorldGenUtils {
+
+	//Store overworld NGS
+	private static List<NoiseGeneratorSettings> OVERWORLD_NGS_CANDIDATES = new ArrayList<>();
 
 	public static NoiseRouter overworld(HolderGetter<DensityFunction> hg1, HolderGetter<NormalNoise.NoiseParameters> hg2, boolean p_255649_, boolean p_255617_) {
 		
@@ -98,13 +97,27 @@ public class WorldGenUtils {
 				densityfunction19, 
 				densityfunction20);
 	}
+
+	public static void addNGS(NoiseGeneratorSettings NGS){
+
+		OVERWORLD_NGS_CANDIDATES.add(NGS);
+	}
 	
-	public static boolean checkIfLikelyOverworld(NoiseSettings settings) {		
+	public static boolean checkIfLikelyOverworld(NoiseGeneratorSettings settings) {
+		/*
 		boolean rightHeight = settings.height() == 384;
 		boolean rightDepth = settings.minY() == -64;
 		boolean rightRatioVertical = settings.noiseSizeHorizontal() == 1;
 		//boolean rightRatioHorizontal = settings.noiseSizeVertical() == 2;
 		
 		return rightHeight && rightDepth && rightRatioVertical /*&& rightRatioHorizontal*/;
+		//CaveOverhaul.LOGGER.error("Checking settings -> " + settings + " vs " + OVERWORLD_NGS);
+		for(NoiseGeneratorSettings candidate: OVERWORLD_NGS_CANDIDATES){
+			if (settings == candidate){
+				return true;
+			}
+		}
+		return false;
+
 	}
 }

@@ -11,7 +11,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.carvertypes.rivers.*;
-import wftech.caveoverhaul.carvertypes.simplex.NoiseCaveSimplexBoring;
 
 public class InitCarverTypes {
 
@@ -31,13 +30,16 @@ public class InitCarverTypes {
 	public final static RegistryObject<? extends CaveWorldCarver> V12_CAVES = 
 			WORLD_CARVERS.register("v12_caves", () -> new OldWorldCarverv12(CaveCarverConfiguration.CODEC));
 
+
 	public final static RegistryObject<? extends CaveWorldCarver> V16_CAVES = 
 			WORLD_CARVERS.register("v16_caves", () -> new OldWorldCarverv16(CaveCarverConfiguration.CODEC));
+
 
 	/*
 	public final static RegistryObject<? extends CaveWorldCarver> MYCELIUM_CAVE = 
 			WORLD_CARVERS.register("mycelium_cave", () -> new OldWorldCarverv12(CaveCarverConfiguration.CODEC));
 	*/
+	/*
 	public final static RegistryObject<? extends CaveWorldCarver> NOISE_CARVER_LAYER_1 = 
 			WORLD_CARVERS.register("noise_carver_layer_1", () -> new NoiseCavernTopLayer3(CaveCarverConfiguration.CODEC));
 
@@ -58,6 +60,7 @@ public class InitCarverTypes {
 
 	public final static RegistryObject<? extends CaveWorldCarver> NOISE_CARVER_LAYER_8 = 
 			WORLD_CARVERS.register("noise_carver_layer_7", () -> new NoiseCavernBottomLayer2(CaveCarverConfiguration.CODEC));
+	 */
 
 	public final static RegistryObject<? extends CaveWorldCarver> CAVES_NOISE_DISTRIBUTION = 
 			WORLD_CARVERS.register("caves_noise_distribution", () -> new OldWorldCarverv12ReverseNoiseDistribution(CaveCarverConfiguration.CODEC));
@@ -70,8 +73,10 @@ public class InitCarverTypes {
 	
 	//Test
 
+	/*
 	public final static RegistryObject<? extends CaveWorldCarver> CAVE_NOISE_SIMPLEX_BORING = 
 			WORLD_CARVERS.register("noise_cave_simplex_boring", () -> new NoiseCaveSimplexBoring(CaveCarverConfiguration.CODEC));
+
 
 	public final static RegistryObject<? extends CaveWorldCarver> CAVE_UNDERGROUND_RIVER = 
 			WORLD_CARVERS.register("noise_underground_rivers", () -> new NoiseUndergroundRiver(CaveCarverConfiguration.CODEC));
@@ -109,10 +114,12 @@ public class InitCarverTypes {
 	public final static RegistryObject<? extends CaveWorldCarver> CAVE_UNDERGROUND_RIVER_L8_W = 
 			WORLD_CARVERS.register("noise_underground_rivers_layer8_water", () -> new NoiseUndergroundRiver_Layer8_Water(CaveCarverConfiguration.CODEC));
 
+
 	
 	
 	
 	public final static RegistryObject<? extends CaveWorldCarver> POST_RIVER_DEBUG_TO_STONE = 
 			WORLD_CARVERS.register("noise_underground_rivers_final_stage", () -> new NoiseUndergroundRiverFinalStage(CaveCarverConfiguration.CODEC));
+	 */
 
 }
