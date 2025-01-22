@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.world.level.levelgen.carver.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.mojang.serialization.Codec;
@@ -22,14 +25,9 @@ import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.carver.CanyonCarverConfiguration;
-import net.minecraft.world.level.levelgen.carver.CanyonWorldCarver;
-import net.minecraft.world.level.levelgen.carver.CarvingContext;
-import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
-import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
-import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import wftech.caveoverhaul.AirOnlyAquifer;
 import wftech.caveoverhaul.CaveOverhaul;
+import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
 public class OldWorldCarverv12 extends CaveWorldCarver {
@@ -39,6 +37,16 @@ public class OldWorldCarverv12 extends CaveWorldCarver {
 	 * With the introduction of deepslate, there's a great chance to rebalance cave densities around
 	 * the deepslate introduction layer. It'll create a sense of how deep the player is :)
 	 */
+	public static final Codec<CaveCarverConfiguration> CODEC = RecordCodecBuilder.create(
+			p_159184_ -> p_159184_.group(
+							CarverConfiguration.CODEC.forGetter(p_159192_ -> p_159192_),
+							FloatProvider.CODEC.fieldOf("horizontal_radius_multiplier").forGetter(p_159190_ -> p_159190_.horizontalRadiusMultiplier),
+							FloatProvider.CODEC.fieldOf("vertical_radius_multiplier").forGetter(p_159188_ -> p_159188_.verticalRadiusMultiplier),
+							FloatProvider.codec(-1.0F, 1.0F).fieldOf("floor_level").forGetter(p_159186_ -> p_159186_.floorLevel)
+					)
+					.apply(p_159184_, CaveCarverConfiguration::new)
+	);
+
 	public OldWorldCarverv12(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 	}
@@ -152,8 +160,9 @@ public class OldWorldCarverv12 extends CaveWorldCarver {
 
 		int minHeight = SectionPos.sectionToBlockCoord(this.getRange() * 2 - 1);
 		int maxHeight = random.nextInt(random.nextInt(random.nextInt(this.getCaveBound()) + 1) + 1) + random.nextInt(2, 8); // was +1 at the end
-		Aquifer airAquifer = new AirOnlyAquifer(level, random.nextFloat() <=  0.15f);
-	
+		//Aquifer airAquifer = new AirOnlyAquifer(level, random.nextFloat() <=  0.25f);
+		Aquifer airAquifer = new AirOnlyAquifer(level, random.nextFloat() <=  Config.settings.get(Config.KEY_CAVE_AIR_EXPOSURE));
+
 		for(int k = 0; k < maxHeight; ++k) {
 			this.generateRoomCluster(
 				ctx, cfg, level, pos2BiomeMapping, random, 
@@ -202,9 +211,10 @@ public class OldWorldCarverv12 extends CaveWorldCarver {
 		
 	    boolean initialFlag;
 	    Random random = new Random(seed);
-	    Aquifer aquifer = new AirOnlyAquifer(chunkPrimer, surface ? true : random.nextFloat() <=  0.15f);
-	    
-	    int skipEvery = 0;
+	    //Aquifer aquifer = new AirOnlyAquifer(chunkPrimer, surface ? true : random.nextFloat() <=  0.25f);
+		Aquifer aquifer = new AirOnlyAquifer(chunkPrimer, surface ? true : random.nextFloat() <=  Config.settings.get(Config.KEY_CAVE_AIR_EXPOSURE));
+
+		int skipEvery = 0;
 	    MutableBlockPos mbPosCheckAir = new BlockPos.MutableBlockPos();
 	    List<BlockPos> airPosList = new ArrayList<>();
 

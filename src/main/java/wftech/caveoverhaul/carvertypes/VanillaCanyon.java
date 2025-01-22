@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.carver.CanyonCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CanyonWorldCarver;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import wftech.caveoverhaul.AirOnlyAquifer;
+import wftech.caveoverhaul.Config;
 
 public class VanillaCanyon extends CanyonWorldCarver {
 
@@ -26,8 +27,14 @@ public class VanillaCanyon extends CanyonWorldCarver {
 	
 	@Override
 	public boolean isStartChunk(CanyonCarverConfiguration cfg, RandomSource random) {
+		//float flt = random.nextFloat();
+		//return flt <= cfg.probability;
 		float flt = random.nextFloat();
-		return flt <= cfg.probability;
+		if (cfg.yScale.getMaxValue() == 3.01) {
+			return flt <= Config.settings.get(Config.KEY_CANYON_LOWER_CHANCE);
+		} else {
+			return flt <= Config.settings.get(Config.KEY_CANYON_UPPER_CHANCE);
+		}
 	}
 
 
@@ -41,6 +48,6 @@ public class VanillaCanyon extends CanyonWorldCarver {
 			ChunkPos p_224819_, 
 			CarvingMask p_224820_) {
 		
-		return super.carve(p_224813_, p_224814_, chunkAccess, p_224816_, p_224817_, new AirOnlyAquifer(chunkAccess, p_224817_.nextFloat() <=  0.3f), p_224819_, p_224820_);
+		return super.carve(p_224813_, p_224814_, chunkAccess, p_224816_, p_224817_, new AirOnlyAquifer(chunkAccess, p_224817_.nextFloat() <=  Config.settings.get(Config.KEY_CANYON_UPPER_AIR_EXPOSURE)), p_224819_, p_224820_);
 	}
 }

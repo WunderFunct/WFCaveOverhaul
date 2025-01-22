@@ -3,6 +3,7 @@ package wftech.caveoverhaul.biomemodifiers;
 
 import com.mojang.datafixers.kinds.Applicative;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.world.level.biome.Biome;
@@ -24,25 +25,23 @@ public class InitBiomeModifiers {
 		BIOME_MODIFIER_SERIALIZERS.register(eventBus);
 	}
 	
-	public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIER_SERIALIZERS =
+	public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIER_SERIALIZERS =
             DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, CaveOverhaul.MOD_ID);
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final RegistryObject<Codec<AddCarversBiomeModifier>> BM_ADD_CARVERS = BIOME_MODIFIER_SERIALIZERS.register("add_carver", 
-			() -> RecordCodecBuilder.create(
+	public static final RegistryObject<MapCodec<AddCarversBiomeModifier>> BM_ADD_CARVERS = BIOME_MODIFIER_SERIALIZERS.register("add_carver",
+			() -> RecordCodecBuilder.mapCodec(
 			        builder -> builder.group(
 			            Biome.LIST_CODEC.fieldOf("biomes").forGetter(AddCarversBiomeModifier::biomes), 
-			            ConfiguredWorldCarver.LIST_CODEC.fieldOf("carvers").forGetter(AddCarversBiomeModifier::carvers),
-			            GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(AddCarversBiomeModifier::step)
+			            ConfiguredWorldCarver.LIST_CODEC.fieldOf("carvers").forGetter(AddCarversBiomeModifier::carvers)
 			        ).apply((Applicative) builder, AddCarversBiomeModifier::new)));
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final RegistryObject<Codec<RemoveCarversBiomeModifier>> BM_REMOVE_CARVERS = BIOME_MODIFIER_SERIALIZERS.register("remove_carver", 
-			() -> RecordCodecBuilder.create(
+	public static final RegistryObject<MapCodec<RemoveCarversBiomeModifier>> BM_REMOVE_CARVERS = BIOME_MODIFIER_SERIALIZERS.register("remove_carver",
+			() -> RecordCodecBuilder.mapCodec(
 			        builder -> builder.group(
 			            Biome.LIST_CODEC.fieldOf("biomes").forGetter(RemoveCarversBiomeModifier::biomes), 
-			            ConfiguredWorldCarver.LIST_CODEC.fieldOf("carvers").forGetter(RemoveCarversBiomeModifier::carvers),
-			            GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(RemoveCarversBiomeModifier::step)
+			            ConfiguredWorldCarver.LIST_CODEC.fieldOf("carvers").forGetter(RemoveCarversBiomeModifier::carvers)
 			        ).apply((Applicative) builder, RemoveCarversBiomeModifier::new)));
 
 }

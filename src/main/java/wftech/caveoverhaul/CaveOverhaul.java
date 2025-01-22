@@ -53,6 +53,7 @@ public class CaveOverhaul
     public CaveOverhaul()
     {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        Config.initConfig();
         InitCarverTypes.registerDeferred(eventBus);
         InitBiomeModifiers.registerDeferred(eventBus);
         

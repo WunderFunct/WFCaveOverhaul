@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -28,8 +29,7 @@ import wftech.caveoverhaul.virtualpack.JsonConfigCarvers;
 
 public record RemoveCarversBiomeModifier(
 		HolderSet<Biome> biomes,
-		HolderSet<ConfiguredWorldCarver<?>> carvers,
-		GenerationStep.Decoration step) implements BiomeModifier {		
+		HolderSet<ConfiguredWorldCarver<?>> carvers) implements BiomeModifier {
 
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
@@ -42,7 +42,7 @@ public record RemoveCarversBiomeModifier(
 	}
 
 	@Override
-	public Codec<? extends BiomeModifier> codec() {
+	public MapCodec<? extends BiomeModifier> codec() {
 		return InitBiomeModifiers.BM_REMOVE_CARVERS.get();
 	}
 }

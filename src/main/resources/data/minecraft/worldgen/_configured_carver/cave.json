@@ -1,5 +1,5 @@
 {
-  "type": "caveoverhaul:noise_underground_rivers_layer6_water",
+  "type": "minecraft:cave",
   "config": {
     "debug_settings": {
       "air_state": {
@@ -42,7 +42,7 @@
     "lava_level": {
       "above_bottom": 8
     },
-    "probability": 0.45,
+    "probability": 0.0,
     "replaceable": "#minecraft:overworld_carver_replaceables",
     "vertical_radius_multiplier": {
       "type": "minecraft:uniform",

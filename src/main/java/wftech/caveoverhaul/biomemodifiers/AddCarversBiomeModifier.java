@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -26,8 +27,7 @@ import wftech.caveoverhaul.virtualpack.JsonConfigCarvers;
 
 public record AddCarversBiomeModifier(
 		HolderSet<Biome> biomes,
-		HolderSet<ConfiguredWorldCarver<?>> carvers,
-		GenerationStep.Decoration step) implements BiomeModifier {		
+		HolderSet<ConfiguredWorldCarver<?>> carvers) implements BiomeModifier {
 	
 	public static List<Holder<ConfiguredWorldCarver>> POSTGEN_ADD_ULTRALARGE_NOISE_FEATURES = new ArrayList<>();
 	
@@ -44,7 +44,7 @@ public record AddCarversBiomeModifier(
 	}
 
 	@Override
-	public Codec<? extends BiomeModifier> codec() {
+	public MapCodec<? extends BiomeModifier> codec() {
 		return InitBiomeModifiers.BM_ADD_CARVERS.get();
 	}
 	
