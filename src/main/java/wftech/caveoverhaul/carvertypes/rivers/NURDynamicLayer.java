@@ -1,71 +1,42 @@
 package wftech.caveoverhaul.carvertypes.rivers;
 
-import java.util.HashMap;
-import java.util.Random;
-
-/*
- * Wall fix:
- * 
- * Instead of going from 1 to 0 (carve to not carve), allow for fuzzy edges where the noise threshold drops as well as the cave size height.
- * So maybe make the cave height drop off slowly, but the noise threshold drop off faster?
- * 
- * height/ysquish = y\ =\ 1\ -\ \frac{1}{1\ +\ e^{\left(1\ \cdot\ \left(-x\ +\ 10\right)\right)}}
- * threshold multiplier (1 to 0, float) = y\ =\ 1\ -\ \frac{1}{1\ +\ e^{\left(2\ \cdot\ \left(-x\ +\ 9\right)\right)}}
- */
-
-import java.util.function.Function;
-
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.CarvingMask;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Aquifer;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
-import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
-import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import wftech.caveoverhaul.AirOnlyAquifer;
-import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
-import wftech.caveoverhaul.fastnoise.FastNoiseLite.DomainWarpType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.NoiseType;
 
-public class NoiseUndergroundRiver_Layer1_Lava2 extends NoiseUndergroundRiver {
+import java.util.HashMap;
+import java.util.function.Function;
+
+public class NURDynamicLayer extends NoiseUndergroundRiver {
 
 	public static int MAX_CAVE_SIZE_Y = 20;
 	public static float NOISE_CUTOFF_RIVER = 0.92f;
-	private int seedOffset = 56;
-	
+	public int seedOffset = 82;
+	private int min_y = 0;
+	private Block blockType = Blocks.WATER;
+
 	//public static FastNoiseLite noise = null;
 	//public static FastNoiseLite yNoise = null;
 	//public static FastNoiseLite caveSizeNoise = null;
 	public static FastNoiseLite mNoise = null;
 	public static FastNoiseLite mNoiseShouldCarveBase = null;
 	public static FastNoiseLite mNoiseYLevelBase = null;
-	
+
 	private CarvingContext ctx;
 	private CaveCarverConfiguration cfg;
 	private ChunkAccess level;
@@ -74,15 +45,18 @@ public class NoiseUndergroundRiver_Layer1_Lava2 extends NoiseUndergroundRiver {
 	private Aquifer aquifer;
 	private CarvingMask mask;
 	private HashMap<String, Float> localThresholdCache;
-	
+
 	public static final Direction[] HORIZONTAL_DIRECTIONS = {Direction.EAST, Direction.NORTH, Direction.SOUTH, Direction.WEST};
 
-	public static NoiseUndergroundRiver INSTANCE = new NoiseUndergroundRiver_Layer1_Lava2();
-	public NoiseUndergroundRiver_Layer1_Lava2() {
+	//public static NoiseUndergroundRiver INSTANCE = new NURDynamicLayer();
+	public NURDynamicLayer(Block blockType, int min_y, int seedOffset) {
 		super();
+		this.blockType = blockType;
+		this.min_y = min_y;
+		this.seedOffset = seedOffset;
 	}
-	
-	public NoiseUndergroundRiver_Layer1_Lava2(Codec<CaveCarverConfiguration> p_159194_) {
+
+	public NURDynamicLayer(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 		// TODO Auto-generated constructor stub
 	}
@@ -98,21 +72,42 @@ public class NoiseUndergroundRiver_Layer1_Lava2 extends NoiseUndergroundRiver {
 	 * 32 to 48 * Water x1
 	 * 48 to 64
 	 */
+
+	public void setSeed(int seed){
+		this.seedOffset = seed;
+	}
+
+	public void set_min_y(int min_y){
+		this.min_y = min_y;
+	}
+
+	public void setBlockType(Block block){
+		this.blockType = block;
+	}
 	
 	@Override
 	protected int getCaveY(float noiseValue) {
-		float min = -56;
-		float max = (-56) + 8; //6
-		if(Config.getBoolSetting(Config.KEY_LAVA_RIVER_FLAT)){
-			return (int) min;
+		//40 is the midpoint
+		float min = this.min_y;
+		float max = (this.min_y) + 8; //3
+
+		if (this.blockType == Blocks.WATER) {
+			if(Config.getBoolSetting(Config.KEY_WATER_RIVER_FLAT)){
+				return (int) min;
+			}
+		} else if (this.blockType == Blocks.LAVA) {
+			if(Config.getBoolSetting(Config.KEY_LAVA_RIVER_FLAT)){
+				return (int) min;
+			}
 		}
+
 		float diffSize = max - min;
 		return (int) (noiseValue * (diffSize)) + (int) min;
 	}
 	
 	@Override
 	protected Block getLiquidType() {
-		return Blocks.LAVA;
+		return this.blockType;
 	}
 	
 	//Lava by default (in a mixed set) -OR- <entry>2 -> > 0f. Else, < 0f.

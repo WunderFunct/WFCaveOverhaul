@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.WorldGenUtils;
 import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer1;
@@ -54,6 +55,9 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 		if(!isLikelyOverworld) {
 			return;
 		}
+
+		//init layers
+		NURDynamicHolder.init(((IMixinHelperNoiseChunk) (Object) this).getNGS().noiseSettings().minY());
 
 		int x = thisChunk.blockX();
 		int y = thisChunk.blockY();

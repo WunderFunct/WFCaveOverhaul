@@ -48,6 +48,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.AirOnlyAquifer;
 
 import wftech.caveoverhaul.CaveOverhaul;
+import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.DomainWarpType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
@@ -104,7 +105,7 @@ public class NoiseUndergroundRiver_Layer8_Water extends NoiseUndergroundRiver {
 		//40 is the midpoint
 		float min = 48;
 		float max = (48) + 8; //3
-		if(!CaveOverhaul.ENABLE_MULTILAYER_RIVERS){
+		if(Config.getBoolSetting(Config.KEY_WATER_RIVER_FLAT)){
 			return (int) min;
 		}
 		float diffSize = max - min;
