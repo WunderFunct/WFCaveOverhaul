@@ -207,7 +207,7 @@ public class Config {
             DEFAULT_VALUES.put(KEY_CANYON_UPPER_AIR_EXPOSURE, 0.3f);
             DEFAULT_VALUES.put(KEY_CANYON_LOWER_CHANCE, 0.04f);
             DEFAULT_VALUES.put(KEY_GENERATE_CAVERNS, 0f);
-            DEFAULT_VALUES.put(KEY_USE_AQUIFER_PATCH, 1f);
+            DEFAULT_VALUES.put(KEY_USE_AQUIFER_PATCH, 0f);
         }
     }
 

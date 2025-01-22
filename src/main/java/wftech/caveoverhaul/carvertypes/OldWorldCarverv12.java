@@ -140,7 +140,8 @@ public class OldWorldCarverv12 extends CaveWorldCarver {
     }
     
     protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos) {
-    	return true;
+		float flt = random.nextFloat();
+		return flt <= Config.settings.get(Config.KEY_CAVE_CHANCE);
     }
 
 	@Override
