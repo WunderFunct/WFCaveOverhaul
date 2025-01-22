@@ -16,6 +16,7 @@ import java.util.List;
 
 import java.util.function.Function;
 
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.mojang.serialization.Codec;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.AirOnlyAquifer;
 import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
@@ -247,7 +247,8 @@ public abstract class NoiseCavernBaseSkipCarverVariant extends CaveWorldCarver {
 						if(!setToLiquid) {
 							mask.set(mPos.getX(), mPos.getY(), mPos.getZ());
 						}
-						LevelAccessor access = level.getWorldForge();
+						//UNDO: DO I NEED THIS?
+						//LevelAccessor access = level.getWorldForge();
 					} catch (ArrayIndexOutOfBoundsException e){
 						CaveOverhaul.LOGGER.error("[Cave Overhaul] NoiseCarverTest real error");
 					}

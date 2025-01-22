@@ -19,15 +19,6 @@ public class Config {
     public static String KEY_CANYON_LOWER_CHANCE = "canyon_lower_chance";
     public static String KEY_GENERATE_CAVERNS = "generate_minecraft_caverns";
     public static String KEY_USE_AQUIFER_PATCH = "use_aquifer_patch";
-
-    //1.3.4
-    public static String KEY_LAVA_RIVER_FLAT = "use_flat_lava_rivers";
-    public static String KEY_WATER_RIVER_FLAT = "use_flat_water_rivers";
-    public static String KEY_LAVA_RIVER_ENABLE = "enable_lava_rivers";
-    public static String KEY_WATER_RIVER_ENABLE = "enable_water_rivers";
-    public static String KEY_ENABLE_CAVES_BELOW_MINUS_Y64 = "enable_caves_below_minus_y64";
-    public static String KEY_USE_LEGACY_OVERWORLD_DETECTION = "use_legacy_overworld_detection";
-
     private static String[] validKeys = {
             KEY_CAVE_CHANCE,
             KEY_CAVE_AIR_EXPOSURE,
@@ -36,27 +27,11 @@ public class Config {
             KEY_CANYON_UPPER_AIR_EXPOSURE,
             KEY_GENERATE_CAVERNS,
             KEY_USE_AQUIFER_PATCH,
-
-            //1.3.4
-            KEY_LAVA_RIVER_FLAT,
-            KEY_WATER_RIVER_FLAT,
-            KEY_LAVA_RIVER_ENABLE,
-            KEY_WATER_RIVER_ENABLE,
-            KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
-            KEY_USE_LEGACY_OVERWORLD_DETECTION
     };
 
     private static String[] boolKeys = {
             KEY_GENERATE_CAVERNS,
             KEY_USE_AQUIFER_PATCH,
-
-            //1.3.4
-            KEY_LAVA_RIVER_FLAT,
-            KEY_WATER_RIVER_FLAT,
-            KEY_LAVA_RIVER_ENABLE,
-            KEY_WATER_RIVER_ENABLE,
-            KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
-            KEY_USE_LEGACY_OVERWORLD_DETECTION,
     };
 
     private static HashMap<String, Float> DEFAULT_VALUES = null;
@@ -99,8 +74,6 @@ public class Config {
                 writer.write("# Caverns refer to the ultra-large caves added in 1.18. Enabling these will have a minor decrease in worldgen performance.\n");
                 writer.write("# Likewise, enabling caverns could result in awkward terrain as the noise rules are way different from Cave Overhaul's.\n");
                 writer.write("# Enabling minecraft's caverns will re-enable the default worldgen. If you experience any mod conflicts, consider enabling the caverns option.\n");
-                writer.write("#\n");
-                writer.write("# Legacy overworld detection is currently not implemented.\n");
                 writer.write("#\n");
                 writer.write("# The aquifer patch fixes water-related issues, but could impact worldgen speed.\n");
                 writer.write("# The format is <key>=<value> with no spaces\n");
@@ -235,15 +208,6 @@ public class Config {
             DEFAULT_VALUES.put(KEY_CANYON_LOWER_CHANCE, 0.04f);
             DEFAULT_VALUES.put(KEY_GENERATE_CAVERNS, 0f);
             DEFAULT_VALUES.put(KEY_USE_AQUIFER_PATCH, 0f);
-
-            //1.3.4
-            DEFAULT_VALUES.put(KEY_LAVA_RIVER_FLAT, 0f);
-            DEFAULT_VALUES.put(KEY_WATER_RIVER_FLAT, 0f);
-            DEFAULT_VALUES.put(KEY_LAVA_RIVER_ENABLE, 1f);
-            DEFAULT_VALUES.put(KEY_WATER_RIVER_ENABLE, 1f);
-            DEFAULT_VALUES.put(KEY_ENABLE_CAVES_BELOW_MINUS_Y64, 1f);
-            DEFAULT_VALUES.put(KEY_USE_LEGACY_OVERWORLD_DETECTION, 1f);
-
         }
     }
 

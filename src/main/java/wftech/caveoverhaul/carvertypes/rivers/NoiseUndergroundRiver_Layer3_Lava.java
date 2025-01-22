@@ -15,6 +15,7 @@ import java.util.Random;
 
 import java.util.function.Function;
 
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -44,11 +45,9 @@ import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.AirOnlyAquifer;
 
 import wftech.caveoverhaul.CaveOverhaul;
-import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.DomainWarpType;
 import wftech.caveoverhaul.fastnoise.FastNoiseLite.FractalType;
@@ -104,7 +103,7 @@ public class NoiseUndergroundRiver_Layer3_Lava extends NoiseUndergroundRiver {
 	protected int getCaveY(float noiseValue) {
 		float min = -25;
 		float max = (-25) + 8; //3
-		if(Config.getBoolSetting(Config.KEY_LAVA_RIVER_FLAT)){
+		if(!CaveOverhaul.ENABLE_MULTILAYER_RIVERS){
 			return (int) min;
 		}
 		float diffSize = max - min;

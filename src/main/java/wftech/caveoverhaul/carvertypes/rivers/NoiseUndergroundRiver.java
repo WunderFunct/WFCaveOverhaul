@@ -15,6 +15,7 @@ import java.util.Random;
 
 import java.util.function.Function;
 
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -44,7 +45,6 @@ import net.minecraft.world.level.levelgen.carver.CarvingContext;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.CaveWorldCarver;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.AirOnlyAquifer;
 import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.DummyCodec;

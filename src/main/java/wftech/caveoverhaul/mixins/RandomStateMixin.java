@@ -2,6 +2,9 @@ package wftech.caveoverhaul.mixins;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.*;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -14,9 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.NoiseMaker;
 import wftech.caveoverhaul.WorldGenUtils;
@@ -60,7 +60,6 @@ public class RandomStateMixin {
 			density_function = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 		}
 
-
 		Registry<NoiseGeneratorSettings> noiseReg = registries.lookupOrThrow(Registries.NOISE_SETTINGS);
 
 		for(Map.Entry<ResourceKey<NoiseGeneratorSettings>, NoiseGeneratorSettings> entry: noiseReg.entrySet()){
@@ -70,13 +69,13 @@ public class RandomStateMixin {
 			}
 		}
 
-		NoiseGeneratorSettings overworldNoise = noiseReg.getOrThrow(NoiseGeneratorSettings.OVERWORLD).get();
+		NoiseGeneratorSettings overworldNoise = noiseReg.getOrThrow(NoiseGeneratorSettings.OVERWORLD).value();
 
 		//Store our target settings for later confirmation that we're on the overworld level
 		WorldGenUtils.addNGS(overworldNoise);
 
 		for(ResourceLocation key: noiseReg.keySet()) {
-			NoiseGeneratorSettings ngs_noise = noiseReg.get(key).get().get();
+			NoiseGeneratorSettings ngs_noise = noiseReg.get(key).get().value();
 			if( (!Config.getBoolSetting(Config.KEY_GENERATE_CAVERNS)) & key.getPath().toLowerCase().contains("overworld") && (defaultSettings == ngs_noise)) {
 
 				NoiseRouter defaultNoiseRouter = defaultSettings.noiseRouter();

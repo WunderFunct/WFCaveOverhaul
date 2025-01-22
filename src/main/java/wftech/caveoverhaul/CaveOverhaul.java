@@ -5,6 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
@@ -19,6 +22,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
+/*
 import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,6 +40,8 @@ import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.ObjectHolderRegistry;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryManager;
+ */
+import net.neoforged.fml.common.Mod;
 import wftech.caveoverhaul.biomemodifiers.InitBiomeModifiers;
 import wftech.caveoverhaul.carvertypes.InitCarverTypes;
 
@@ -50,13 +56,12 @@ public class CaveOverhaul
     public static AbstractCommentedConfig EARLY_LOAD_CONFIG = null;
     public static boolean ENABLE_MULTILAYER_RIVERS = true;
 
-    public CaveOverhaul()
+    public CaveOverhaul(IEventBus modEventBus, ModContainer modContainer)
     {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         Config.initConfig();
-        InitCarverTypes.registerDeferred(eventBus);
-        InitBiomeModifiers.registerDeferred(eventBus);
-        
-        MinecraftForge.EVENT_BUS.register(this);
+        InitCarverTypes.registerDeferred(modEventBus);
+        InitBiomeModifiers.registerDeferred(modEventBus);
+
+        //NeoForge.EVENT_BUS.register(this);
     }
 }
