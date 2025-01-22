@@ -16,6 +16,6 @@ public class LazyLoadingSafetyWrapper {
 	}
 
 	public static void sendLocalMessage(Component component) {
-		Minecraft.getInstance().player.sendSystemMessage(component);
+		Minecraft.getInstance().player.displayClientMessage(component, false);
 	}
 }

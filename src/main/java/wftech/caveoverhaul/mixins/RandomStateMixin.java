@@ -55,25 +55,28 @@ public class RandomStateMixin {
 		} else {
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			registries = server.registryAccess();
-			Provider provider = registries.asGetterLookup();
-			noise = provider.lookupOrThrow(Registries.NOISE);
-			density_function = provider.lookupOrThrow(Registries.DENSITY_FUNCTION);
+			//Provider provider = registries.asGetterLookup();
+			noise = registries.lookupOrThrow(Registries.NOISE);
+			density_function = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 		}
 
-		Registry<NoiseGeneratorSettings> noiseReg = registries.registryOrThrow(Registries.NOISE_SETTINGS);
+
+		Registry<NoiseGeneratorSettings> noiseReg = registries.lookupOrThrow(Registries.NOISE_SETTINGS);
 
 		for(Map.Entry<ResourceKey<NoiseGeneratorSettings>, NoiseGeneratorSettings> entry: noiseReg.entrySet()){
 			//CaveOverhaul.LOGGER.error(entry.getKey().location().toString());
 			if (entry.getKey().location().getPath().equals("overworld")){
 				WorldGenUtils.addNGS(entry.getValue());
 			}
-		}NoiseGeneratorSettings overworldNoise = noiseReg.getOrThrow(NoiseGeneratorSettings.OVERWORLD);
+		}
+
+		NoiseGeneratorSettings overworldNoise = noiseReg.getOrThrow(NoiseGeneratorSettings.OVERWORLD).get();
 
 		//Store our target settings for later confirmation that we're on the overworld level
 		WorldGenUtils.addNGS(overworldNoise);
 
 		for(ResourceLocation key: noiseReg.keySet()) {
-			NoiseGeneratorSettings ngs_noise = noiseReg.get(key);
+			NoiseGeneratorSettings ngs_noise = noiseReg.get(key).get().get();
 			if( (!Config.getBoolSetting(Config.KEY_GENERATE_CAVERNS)) & key.getPath().toLowerCase().contains("overworld") && (defaultSettings == ngs_noise)) {
 
 				NoiseRouter defaultNoiseRouter = defaultSettings.noiseRouter();

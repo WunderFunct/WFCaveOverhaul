@@ -32,10 +32,10 @@ public class NoiseBasedChunkGeneratorMixin {
 	//	@Inject(method="applyCarvers(    Lnet/minecraft/server/level/WorldGenRegion;JLnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/levelgen/GenerationStep$Carving;)V",
 		//m_213679_         applyCarvers(Lnet/minecraft/server/level/WorldGenRegion;JLnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/levelgen/GenerationStep$Carving;)V
 		//applyCarvers                  (Lnet/minecraft/server/level/WorldGenRegion;JLnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/levelgen/GenerationStep$Carving;)V
-		@Inject(method="applyCarvers(Lnet/minecraft/server/level/WorldGenRegion;JLnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/levelgen/GenerationStep$Carving;)V",
+		@Inject(method="applyCarvers(Lnet/minecraft/server/level/WorldGenRegion;JLnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;)V",
 				//locals = LocalCapture.CAPTURE_FAILHARD,
 				at = @At("RETURN"), remap=false)
-		private void applyCarversInject(WorldGenRegion wgr, long unklong, RandomState randState, BiomeManager biomeMgr, StructureManager strMgr, ChunkAccess chunk, GenerationStep.Carving step, CallbackInfo ci) {
+		private void applyCarversInject(WorldGenRegion wgr, long unklong, RandomState randState, BiomeManager biomeMgr, StructureManager strMgr, ChunkAccess chunk, CallbackInfo ci) {
 			List<Holder<ConfiguredWorldCarver>> entries = AddCarversBiomeModifier.POSTGEN_ADD_ULTRALARGE_NOISE_FEATURES;
 			Random random = new Random();
 			String searchName = "_final_stage";

@@ -29,6 +29,7 @@ public class VanillaCanyon extends CanyonWorldCarver {
 	public boolean isStartChunk(CanyonCarverConfiguration cfg, RandomSource random) {
 		//float flt = random.nextFloat();
 		//return flt <= cfg.probability;
+		//wftech.caveoverhaul.CaveOverhaul.LOGGER.error("-> DEBUG, should carve? " + );
 		float flt = random.nextFloat();
 		if (cfg.yScale.getMaxValue() == 3.01) {
 			return flt <= Config.settings.get(Config.KEY_CANYON_LOWER_CHANCE);
@@ -47,7 +48,8 @@ public class VanillaCanyon extends CanyonWorldCarver {
 			Aquifer aquifer, 
 			ChunkPos p_224819_, 
 			CarvingMask p_224820_) {
-		
+
+		//wftech.caveoverhaul.CaveOverhaul.LOGGER.error("-> DEBUG, YES carve!");
 		return super.carve(p_224813_, p_224814_, chunkAccess, p_224816_, p_224817_, new AirOnlyAquifer(chunkAccess, p_224817_.nextFloat() <=  Config.settings.get(Config.KEY_CANYON_UPPER_AIR_EXPOSURE)), p_224819_, p_224820_);
 	}
 }

@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
 import wftech.caveoverhaul.AirOnlyAquifer;
 import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.Config;
+import wftech.caveoverhaul.fastnoise.FastNoiseLite;
 import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
 public class OldWorldCarverv12 extends CaveWorldCarver {
@@ -138,11 +139,18 @@ public class OldWorldCarverv12 extends CaveWorldCarver {
             	    surfaceCluster);
         }
     }
-    
+
+	/*
     protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos) {
-		float flt = random.nextFloat();
-		return flt <= Config.settings.get(Config.KEY_CAVE_CHANCE);
+    	return true;
     }
+	 */
+
+	protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos_) {
+		float odds2 = Config.settings.get(Config.KEY_CAVE_CHANCE);
+
+		return random.nextFloat() <= odds2;
+	}
 
 	@Override
 	public boolean carve(

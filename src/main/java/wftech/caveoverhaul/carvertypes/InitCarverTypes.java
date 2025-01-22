@@ -59,8 +59,9 @@ public class InitCarverTypes {
 	public final static RegistryObject<? extends CaveWorldCarver> NOISE_CARVER_LAYER_8 = 
 			WORLD_CARVERS.register("noise_carver_layer_7", () -> new NoiseCavernBottomLayer2(OldWorldCarverv12.CODEC));
 
-	public final static RegistryObject<? extends CaveWorldCarver> CAVES_NOISE_DISTRIBUTION = 
-			WORLD_CARVERS.register("caves_noise_distribution", () -> new OldWorldCarverv12ReverseNoiseDistribution(OldWorldCarverv12.CODEC));
+	//OldWorldCarverv12ReverseNoiseDistribution
+	public final static RegistryObject<? extends CaveWorldCarver> CAVES_NOISE_DISTRIBUTION =
+			WORLD_CARVERS.register("caves_noise_distribution", () -> new ZNewCave(OldWorldCarverv12.CODEC));
 
 	public final static RegistryObject<? extends CaveWorldCarver> VANILLA_CAVES = 
 			WORLD_CARVERS.register("vanilla_caves", () -> new VanillaCave(OldWorldCarverv12.CODEC));

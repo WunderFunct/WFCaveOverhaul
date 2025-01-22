@@ -47,8 +47,8 @@ public class NoiseMaker {
             } else {
                 MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
                 registries = server.registryAccess();
-                HolderGetter.Provider provider = registries.asGetterLookup();
-                density_function = provider.lookupOrThrow(Registries.DENSITY_FUNCTION);
+                //HolderGetter.Provider provider = registries.asGetterLookup();
+                density_function = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 
             }
 

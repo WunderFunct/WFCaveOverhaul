@@ -15,10 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -35,10 +34,10 @@ public record AddCarversBiomeModifier(
 	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
 
 		if (phase == BiomeModifier.Phase.ADD && biome.is(BiomeTags.IS_OVERWORLD)) {
-			BiomeGenerationSettingsBuilder generationSettings = builder.getGenerationSettings();
+			BiomeGenerationSettings.PlainBuilder generationSettings = builder.getGenerationSettings();
 			
 			for(Holder<ConfiguredWorldCarver<?>> holder: this.carvers()) {
-				generationSettings.addCarver(Carving.AIR, (Holder<ConfiguredWorldCarver<?>>)holder);
+				generationSettings.addCarver((Holder<ConfiguredWorldCarver<?>>)holder);
 			}
 		}
 	}
