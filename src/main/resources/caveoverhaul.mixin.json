@@ -13,6 +13,8 @@
     "NoiseChunkAccessor",
     "NoiseChunkMixin",
     "NoiseRouterDataAccessor",
+    "CarvingMaskMixin",
+    "ProtoChunkMixin",
     "RandomStateMixin"
   ],
   "client": [

@@ -15,6 +15,8 @@ import net.minecraft.world.level.levelgen.DensityFunction.SinglePointContext;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.carver.CarvingContext;
+import wftech.caveoverhaul.carvertypes.rivers.NURDynamicLayer;
+import wftech.caveoverhaul.utils.Globals;
 import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
 //public class AirOnlyAquifer implements Aquifer {
@@ -52,8 +54,9 @@ public class AirOnlyAquifer implements Aquifer {
 
 		BlockState state = this.level.getBlockState(new BlockPos(ctx.blockX(), ctx.blockY(), ctx.blockZ()));
 
-		if (ctx.blockY() <= (-64 + 9) && state != null && state.getBlock() == Blocks.LAVA) {
-			return state;
+		int y_offset = (int) Config.getFloatSetting(Config.KEY_LAVA_OFFSET);
+		if (ctx.blockY() <= (Globals.minY + y_offset)) {
+			return Blocks.LAVA.defaultBlockState();
 		}
 
 		///tp -656 60 138
@@ -127,16 +130,12 @@ public class AirOnlyAquifer implements Aquifer {
 			return state;
 		}
 
-
-		if(NoiseChunkMixinUtils.shouldSetToLava(topHeight, ctx.blockX(), ctx.blockY(), ctx.blockZ())) {
+		NURDynamicLayer riverLayer = null;
+		if(NoiseChunkMixinUtils.getRiverLayer(topHeight, ctx.blockX(), ctx.blockY(), ctx.blockZ()) != null) {
 			return state;
-		} else if(NoiseChunkMixinUtils.shouldSetToWater(topHeight, ctx.blockX(), ctx.blockY(), ctx.blockZ())) {
+		} else if (NoiseChunkMixinUtils.shouldSetToStone(topHeight, ctx.blockX(), ctx.blockY(), ctx.blockZ())) {
 			return state;
-		} else if(NoiseChunkMixinUtils.shouldSetToStone(topHeight, ctx.blockX(), ctx.blockY(), ctx.blockZ())) {
-			return state;
-		} else if(NoiseChunkMixinUtils.shouldSetToLava(topHeight, ctx.blockX(), ctx.blockY() + 1, ctx.blockZ())) {
-			return state;
-		} else if(NoiseChunkMixinUtils.shouldSetToWater(topHeight, ctx.blockX(), ctx.blockY() + 1, ctx.blockZ())) {
+		} else if(NoiseChunkMixinUtils.getRiverLayer(topHeight, ctx.blockX(), ctx.blockY() + 1, ctx.blockZ()) != null) {
 			return state;
 		}
 

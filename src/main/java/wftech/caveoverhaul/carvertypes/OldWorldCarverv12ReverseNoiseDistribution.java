@@ -35,74 +35,18 @@ public class OldWorldCarverv12ReverseNoiseDistribution extends OldWorldCarverv12
 	public OldWorldCarverv12ReverseNoiseDistribution(Codec<CaveCarverConfiguration> p_159194_) {
 		super(p_159194_);
 	}
-	
+
 	@Override
-    protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos_) {
-
-		if(NoiseCavernBottomLayer1.caveSizeNoise == null) {
-			NoiseCavernBottomLayer1.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernBottomLayer2.caveSizeNoise == null) {
-			NoiseCavernBottomLayer2.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernMiddleLayer1.caveSizeNoise == null) {
-			NoiseCavernMiddleLayer1.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernMiddleLayer2.caveSizeNoise == null) {
-			NoiseCavernMiddleLayer2.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernTopLayer1.caveSizeNoise == null) {
-			NoiseCavernTopLayer1.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernTopLayer2.caveSizeNoise == null) {
-			NoiseCavernTopLayer2.initCaveHeightMapStatic();
-		}
-		if(NoiseCavernTopLayer3.caveSizeNoise == null) {
-			NoiseCavernTopLayer3.initCaveHeightMapStatic();
-		}
-		
-		FastNoiseLite[] caveThicknessCarvers = {
-				NoiseCavernBottomLayer1.caveSizeNoise, 
-				NoiseCavernBottomLayer2.caveSizeNoise, 
-				NoiseCavernMiddleLayer1.caveSizeNoise, 
-				NoiseCavernMiddleLayer2.caveSizeNoise, 
-				NoiseCavernTopLayer1.caveSizeNoise,
-				NoiseCavernTopLayer2.caveSizeNoise,
-				NoiseCavernTopLayer3.caveSizeNoise
-		};
-
-		/*
-		ChunkPos chunkPos = level.getPos();
-		int x = chunkPos.getBlockX(0);
-		int z = chunkPos.getBlockZ(0);
-		
-		float totalHeights = 0;
-		float numChecked = 0;
-		float maxHeight = 0;
-		for(FastNoiseLite entry: caveThicknessCarvers) {
-			float noiseFound = entry.GetNoise(x, z) + 1f;
-			totalHeights += noiseFound;
-			numChecked += 2f;
-			if(noiseFound > maxHeight) {
-				maxHeight = noiseFound;
-			}
-		}
-		
-		float avgHeight = totalHeights / numChecked;
-		//float avgHeight = maxHeight;
-		avgHeight *= (float) NoiseCavernBaseNewCaves.MAX_CAVE_SIZE_Y;
-		float noiseToSquish = avgHeight = ((1f + avgHeight) / 2f) * (float) NoiseCavernBaseNewCaves.MAX_CAVE_SIZE_Y;
-		float squished = NoiseCavernBaseNewCaves.ySquishSatic(noiseToSquish);
-		 */
+	protected boolean shouldCarve(CarvingContext ctx, CaveCarverConfiguration cfg, ChunkAccess level, RandomSource random, ChunkPos chunkPos_) {
 
 		float odds2 = Config.settings.get(Config.KEY_CAVE_CHANCE);
-		
+
 		return random.nextFloat() <= odds2;
-    }
-	
+	}
+
 	@Override
 	public boolean isStartChunk(CaveCarverConfiguration p_224894_, RandomSource p_224895_) {
 		return true;
 	}
-	
+
 }

@@ -10,25 +10,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import wftech.caveoverhaul.CaveOverhaul;
 import wftech.caveoverhaul.Config;
 import wftech.caveoverhaul.WorldGenUtils;
-import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer1;
-import wftech.caveoverhaul.carvertypes.NoiseCavernBottomLayer2;
-import wftech.caveoverhaul.carvertypes.NoiseCavernMiddleLayer1;
-import wftech.caveoverhaul.carvertypes.NoiseCavernMiddleLayer2;
-import wftech.caveoverhaul.carvertypes.NoiseCavernTopLayer1;
-import wftech.caveoverhaul.carvertypes.NoiseCavernTopLayer2;
-import wftech.caveoverhaul.carvertypes.NoiseCavernTopLayer3;
-import wftech.caveoverhaul.carvertypes.rivers.*;
+import wftech.caveoverhaul.carvertypes.NoisetypeDomainWarp;
+import wftech.caveoverhaul.carvertypes.rivers.NURLayerHolder;
+import wftech.caveoverhaul.carvertypes.rivers.NURDynamicLayer;
+import wftech.caveoverhaul.utils.Globals;
 import wftech.caveoverhaul.utils.IMixinHelperNoiseChunk;
 import wftech.caveoverhaul.utils.NoiseChunkMixinUtils;
 
 @Mixin(NoiseChunk.class)
-public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
+public class NoiseChunkMixin implements IMixinHelperNoiseChunk {
 
 	private DedicatedServer server;
 	private NoiseSettings NS;
@@ -36,8 +30,7 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 
 	@Inject(method="<init>(ILnet/minecraft/world/level/levelgen/RandomState;IILnet/minecraft/world/level/levelgen/NoiseSettings;Lnet/minecraft/world/level/levelgen/DensityFunctions$BeardifierOrMarker;Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;Lnet/minecraft/world/level/levelgen/Aquifer$FluidPicker;Lnet/minecraft/world/level/levelgen/blending/Blender;)V", at=@At("RETURN"), cancellable=false, remap=true)
 	private void constructorMixin(int int1, RandomState randomstate, int int2, int int3, NoiseSettings noiseSettings,
-								  DensityFunctions.BeardifierOrMarker beardifier, NoiseGeneratorSettings noiseGenSettings,
-								  Aquifer.FluidPicker fluidPicker,
+								  DensityFunctions.BeardifierOrMarker beardifier, NoiseGeneratorSettings noiseGenSettings, Aquifer.FluidPicker fluidPicker,
 								  Blender blender, CallbackInfo ci){
 
 		((NoiseChunkMixin) (Object) this).setNGS(noiseGenSettings);
@@ -51,13 +44,14 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 
 		//boolean isLikelyOverworld = WorldGenUtils.checkIfLikelyOverworld(((NoiseChunkAccessor) this).getNoiseSettings());
 		boolean isLikelyOverworld = WorldGenUtils.checkIfLikelyOverworld(((IMixinHelperNoiseChunk) (Object) this).getNGS());
-
 		if(!isLikelyOverworld) {
 			return;
 		}
 
 		//init layers
-		NURDynamicHolder.init(((IMixinHelperNoiseChunk) (Object) this).getNGS().noiseSettings().minY());
+		int minY = ((IMixinHelperNoiseChunk) (Object) this).getNGS().noiseSettings().minY();
+		Globals.minY = minY;
+		NoisetypeDomainWarp.init(minY);
 
 		int x = thisChunk.blockX();
 		int y = thisChunk.blockY();
@@ -71,12 +65,6 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 		}
 
 		/*
-		 * RED_STAINED_GLASS = lava
-		 * GRAY_STAINED_GLASS = water
-		 * YELLOW_STAINED_GLASS = stone
-		 * BLACK_STAINED_GLASS = air above rivers
-		 */
-		/*
 		Patch 1.3.2 - aquifer patch
 		 */
 		Block original_block_chosen = null;
@@ -87,13 +75,14 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 		}
 
 
-		if (original_block_chosen == Blocks.LAVA && y <= (-64 + 9)){
+		if (original_block_chosen == Blocks.LAVA && y <= (minY + 9)){
 			return;
-		} else if (original_block_chosen == Blocks.AIR && y <= (-64 + 9)){
+		} else if (original_block_chosen == Blocks.AIR && y <= (minY + 9)){
 			return;
 		}
 
 
+		//if (Config.getBoolSetting(Config.KEY_USE_AQUIFER_PATCH) && (original_block_chosen == Blocks.WATER || original_block_chosen == Blocks.LAVA)) {
 		if (Config.getBoolSetting(Config.KEY_USE_AQUIFER_PATCH) && (original_block_chosen == Blocks.WATER || original_block_chosen == Blocks.LAVA)) {
 			if (NoiseChunkMixinUtils.shouldSetToAirRivers(topY, x, y - 1, z)) {
 				cir.setReturnValue(Blocks.STONE.defaultBlockState());
@@ -133,26 +122,27 @@ public class NoiseChunkMixin  implements IMixinHelperNoiseChunk {
 		BUT the original_block_chosen references below in the if statements were part of the aquifer patch
 		 */
 
-		if(NoiseChunkMixinUtils.shouldSetToLava(topY, x, y, z)) {
-			cir.setReturnValue(Blocks.LAVA.defaultBlockState());
-			cir.cancel();
-			return;
-		} else if(NoiseChunkMixinUtils.shouldSetToWater(topY, x, y, z)) {
-			cir.setReturnValue(Blocks.WATER.defaultBlockState());
-			cir.cancel();
-			return;
+		NURDynamicLayer riverLayer = NoiseChunkMixinUtils.getRiverLayer(topY, x, y, z);
+		BlockState preferredState = null;
+		if(riverLayer != null) {
+			preferredState = riverLayer.getLiquidType().defaultBlockState();
 		} else if(NoiseChunkMixinUtils.shouldSetToStone(topY, x, y, z)) {
-			cir.setReturnValue(Blocks.STONE.defaultBlockState());
-			cir.cancel();
-			return;
+			preferredState = Blocks.STONE.defaultBlockState();
 		} else if(NoiseChunkMixinUtils.shouldSetToAirRivers(topY, x, y, z)) {
-			cir.setReturnValue(Blocks.AIR.defaultBlockState());
-			cir.cancel();
-			return;
+			preferredState = Blocks.AIR.defaultBlockState();
 		} else if(NoiseChunkMixinUtils.shouldSetToAirCaverns(topY, x, y, z)) {
-			cir.setReturnValue(Blocks.AIR.defaultBlockState());
+			preferredState = Blocks.AIR.defaultBlockState();
+		}
+
+		if (preferredState != null) {
+			Globals.init();
+			boolean found_vo = Globals.isVolcanicCavernsLoaded;
+			int y_offset = (int) Config.getFloatSetting(Config.KEY_LAVA_OFFSET);
+			if (preferredState.isAir() && y <= Globals.minY + y_offset) {
+				preferredState = Blocks.LAVA.defaultBlockState();
+			}
+			cir.setReturnValue(preferredState);
 			cir.cancel();
-			return;
 		}
 	}
 

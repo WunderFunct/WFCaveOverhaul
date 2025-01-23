@@ -25,8 +25,9 @@ public class Config {
     public static String KEY_WATER_RIVER_FLAT = "use_flat_water_rivers";
     public static String KEY_LAVA_RIVER_ENABLE = "enable_lava_rivers";
     public static String KEY_WATER_RIVER_ENABLE = "enable_water_rivers";
-    public static String KEY_ENABLE_CAVES_BELOW_MINUS_Y64 = "enable_caves_below_minus_y64";
-    public static String KEY_USE_LEGACY_OVERWORLD_DETECTION = "use_legacy_overworld_detection";
+    public static String KEY_LAVA_OFFSET = "bottom_lava_offset";
+    //public static String KEY_ENABLE_CAVES_BELOW_MINUS_Y64 = "enable_caves_below_minus_y64";
+    //public static String KEY_USE_LEGACY_OVERWORLD_DETECTION = "use_legacy_overworld_detection";
 
     private static String[] validKeys = {
             KEY_CAVE_CHANCE,
@@ -42,8 +43,9 @@ public class Config {
             KEY_WATER_RIVER_FLAT,
             KEY_LAVA_RIVER_ENABLE,
             KEY_WATER_RIVER_ENABLE,
-            KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
-            KEY_USE_LEGACY_OVERWORLD_DETECTION
+            KEY_LAVA_OFFSET
+            //KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
+            //KEY_USE_LEGACY_OVERWORLD_DETECTION
     };
 
     private static String[] boolKeys = {
@@ -55,8 +57,8 @@ public class Config {
             KEY_WATER_RIVER_FLAT,
             KEY_LAVA_RIVER_ENABLE,
             KEY_WATER_RIVER_ENABLE,
-            KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
-            KEY_USE_LEGACY_OVERWORLD_DETECTION,
+            //KEY_ENABLE_CAVES_BELOW_MINUS_Y64,
+            //KEY_USE_LEGACY_OVERWORLD_DETECTION,
     };
 
     private static HashMap<String, Float> DEFAULT_VALUES = null;
@@ -100,7 +102,9 @@ public class Config {
                 writer.write("# Likewise, enabling caverns could result in awkward terrain as the noise rules are way different from Cave Overhaul's.\n");
                 writer.write("# Enabling minecraft's caverns will re-enable the default worldgen. If you experience any mod conflicts, consider enabling the caverns option.\n");
                 writer.write("#\n");
-                writer.write("# Legacy overworld detection is currently not implemented.\n");
+                writer.write("# Lava offset = fill the bottom x air blocks of the world with lava. Change this if the bottom-of-the-world lava looks weird.\n");
+                writer.write("# Flat rivers = use a static y value for each river (no mini waterfalls and whatnot).\n");
+                writer.write("# Enable rivers = disable or enable this river type.\n");
                 writer.write("#\n");
                 writer.write("# The aquifer patch fixes water-related issues, but could impact worldgen speed.\n");
                 writer.write("# The format is <key>=<value> with no spaces\n");
@@ -229,10 +233,11 @@ public class Config {
         if (DEFAULT_VALUES == null){
             DEFAULT_VALUES = new HashMap<String, Float>();
             DEFAULT_VALUES.put(KEY_CAVE_CHANCE, 0.12f);
-            DEFAULT_VALUES.put(KEY_CAVE_AIR_EXPOSURE, 0.1f);
             DEFAULT_VALUES.put(KEY_CANYON_UPPER_CHANCE, 0.12f);
-            DEFAULT_VALUES.put(KEY_CANYON_UPPER_AIR_EXPOSURE, 0.3f);
             DEFAULT_VALUES.put(KEY_CANYON_LOWER_CHANCE, 0.04f);
+
+            DEFAULT_VALUES.put(KEY_CAVE_AIR_EXPOSURE, 0.1f);
+            DEFAULT_VALUES.put(KEY_CANYON_UPPER_AIR_EXPOSURE, 0.3f);
             DEFAULT_VALUES.put(KEY_GENERATE_CAVERNS, 0f);
             DEFAULT_VALUES.put(KEY_USE_AQUIFER_PATCH, 0f);
 
@@ -241,8 +246,9 @@ public class Config {
             DEFAULT_VALUES.put(KEY_WATER_RIVER_FLAT, 0f);
             DEFAULT_VALUES.put(KEY_LAVA_RIVER_ENABLE, 1f);
             DEFAULT_VALUES.put(KEY_WATER_RIVER_ENABLE, 1f);
-            DEFAULT_VALUES.put(KEY_ENABLE_CAVES_BELOW_MINUS_Y64, 1f);
-            DEFAULT_VALUES.put(KEY_USE_LEGACY_OVERWORLD_DETECTION, 1f);
+            DEFAULT_VALUES.put(KEY_LAVA_OFFSET, 9f);
+            //DEFAULT_VALUES.put(KEY_ENABLE_CAVES_BELOW_MINUS_Y64, 1f);
+            // DEFAULT_VALUES.put(KEY_USE_LEGACY_OVERWORLD_DETECTION, 1f);
 
         }
     }
